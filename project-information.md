@@ -4,22 +4,22 @@
 ## Beschreibung
 
 Die Web-Applikation soll Schülern einen besseren Einblick in die Statistik eines
-Münzwurfes verschaffen. Durch das Interaktive wählen und Schätzen der nächsten Münze, 
-wird eine Statistik, aus den gewählten Schätzungen der Schüler erstellt und Visuell dargestellt.
+Münzwurfes verschaffen. Durch das Interaktive wählen und Schätzen der nächsten Münze,
+wird eine Statistik, aus den gewählten Schätzungen der Schüler erstellt und visuell dargestellt.
 
 ## User-Kriterien
 Um die Ziele klarer zu definieren, wird niedergeschrieben welche Interaktionen 
 der User mit unserer Web-Applikation machen soll.
 
-Der User soll...
+Der User soll ...
 - ... durch einen Text aufgeklärt werden, was seine/ihre Aufgabe ist
 - ... in der Lage sein, zwischen einen Münzwurf von 8 und 10 auszusuchen
 - ... zwischen Kopf oder Zahl aussuchen können
 - ... sehen können, welche Entscheidungen er vorher getroffen hat.
-- ... am ende der Entscheidungen diese an den Server schicken können.
-- ... die Statistiken von den Münzwurf der anderen Schüler sehen sollen.
+- ... am Ende der Entscheidungen diese an den Server schicken können.
+- ... die Statistiken von dem Münzwurf der anderen Schüler sehen sollen.
 
-![User-flow Diagramm](/docs/Userflow-diagram.svg)
+![User-flow Diagramm](/Docs/Userflow-diagram.svg)
 Der Benutzer hat einen gradlinigen Ablauf.
 
 # Backend Dataflow
@@ -27,8 +27,8 @@ Durch den kleinen Umfang der Applikation wird eine schnelle und minimale API ben
 Diese API muss keine User-Authentifizierung durchführen und nur in der lage sein, ein 
 POST request der Daten anzunehmen und ein GET für Request der Statistik zu verarbeiten.
 
-Der Hauptfokus der Applikation soll die Verarbeitung der gesammelten Daten sein, weshalb 
-Mathematische Funktionen vom Vorteil sind. Unsere Auswahl für die Technologien wird Python mit folgenden Modulen sein.
+Der Hauptfokus der Applikation soll die Verarbeitung der gesammelten Daten sein, weshalb
+mathematische Funktionen vom Vorteil sind. Unsere Auswahl für die Technologien wird Python mit folgenden Modulen sein.
 
 ## Python
 Python ist eines der meist benutzen Programmiersprachen laut einer 
@@ -41,9 +41,9 @@ Zudem ist Python auch eine bekannte Sprache, die in vielen Fällen für das Back
 benutzt wird. 
 
 ## Fast-API
-[Fast-API](https://fastapi.tiangolo.com) ist ein lightweight Web Framework für Rest-API Development. Es ist bekannt für die 
-antwort geschwindigkeit der API's, welches so schnell ist wie NodeJS oder GO. Dabei ist die einarbeitungs Zeit 
-und Development Zeit für kleine Projekte Sehr schnell, weshalb es für unser Projekt sehr geeignet ist, da unser 
+[Fast-API](https://fastapi.tiangolo.com) ist ein lightweight Web Framework für Rest-API Development. Es ist bekannt für die
+antwort geschwindigkeit der APIs, welches so schnell ist wie NodeJS oder GO. Dabei ist die Einarbeitung Zeit
+und Development Zeit für kleine Projekte sehr schnell, weshalb es für unser Projekt sehr geeignet ist, da unser
 Projekt aus 2 API schnittstellen besteht und nicht weiter skalieren muss.
 
 ## SQL Lite
