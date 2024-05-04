@@ -19,7 +19,7 @@ Der User soll...
 - ... am ende der Entscheidungen diese an den Server schicken können.
 - ... die Statistiken von den Münzwurf der anderen Schüler sehen sollen.
 
-![User-flow Diagramm](./docs/Userflow-diagram.svg)
+![User-flow Diagramm](/docs/Userflow-diagram.svg)
 Der Benutzer hat einen gradlinigen Ablauf.
 
 # Backend Dataflow
@@ -49,6 +49,11 @@ Projekt aus 2 API schnittstellen besteht und nicht weiter skalieren muss.
 ## SQL Lite
 Durch die Verwendung von SQL-Alchemy und einer relationalen Datenbank (SQL Lite) werden die gesammelten Daten gespeichert.
 Obwohl es eine Relationale Datenbank ist, werden keine Relationen Existieren. 
+
+# Frontend UI
+Es wird eine Single Page Applikation erstellt, welches die Kriterien vom User-flow Diagramm erfüllen soll. 
+Ein Mockup liegt bereits in Figma vor.
+![Sequenz](/Docs/Frontend%20Sequenz%20Diagramm.png)
 
 
 
