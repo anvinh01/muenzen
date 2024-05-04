@@ -8,3 +8,6 @@ node_modules
 !.env.example
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+package-lock.json
+/cypress/1-getting-started
+/cypress/2-advanced-examples
