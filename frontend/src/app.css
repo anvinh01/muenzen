@@ -20,8 +20,9 @@ html{
 @layer components {
 
     .btn-outer {
-        @apply flex items-center no-underline justify-center w-fit bg-primary px-7 py-2
+        @apply flex items-center no-underline justify-center w-fit h-fit bg-primary px-7 py-2
         border-2 rounded-lg border-neutral border-r-4 border-b-4
         transition-all hover:border-r-2 hover:border-b-2 hover:mt-[2px] hover:ml-[2px];
     }
+
 }

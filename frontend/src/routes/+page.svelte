@@ -1,9 +1,13 @@
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
-    import DefaultButton from '../components/+defaultButton.svelte'; // Adjusted import
-    let svgHero = '';
-    let svgTask = '';
+    import SelectionList from '../components/+SelectionList.svelte'; // Adjusted import
 
+    // SVG names
+    let svgHero: string = '';
+    let svgTask: string = '';
+    let HeadsIcon: string = '';
+    let TailsIcon: string = '';
+    // Fetch the SVGs from public/assets/ when the component is mounted
     onMount(async () => {
         // import the SVG for the hero section
         const res = await fetch('public/assets/Coins-pana 1.svg');
@@ -12,17 +16,50 @@
         // import the SVG for the task section
         const res2 = await fetch('public/assets/Browser stats-pana 1.svg');
         svgTask = await res2.text();
+
+        // import the SVG for the Heads Coin
+        const res3 = await fetch('public/assets/heads-big.svg');
+        HeadsIcon = await res3.text();
+
+        // import the SVG for the Tails Coin
+        const res4 = await fetch('public/assets/tails-big.svg');
+        TailsIcon = await res4.text();
     });
+
+
+    // Create Logic to assign Head or Tails to the selection
+    let scenario = 8;           // scenario is either 6, 10 or 20
+    let counter = 0;
+
+    // Selection as Dict for API-call and Array for display
+    let selection: Record<number, string | null> = {};
+    let selection_array: { id: number; value: string | null }[] = [];
+
+    // Fill up the selection with null values when the scenario changes
+    $: for (let i = 1; i <= scenario; i++) {
+        selection[i] = null;
+    }
+
+    // Change the selection from dictionary to array to display
+    $: {
+        let keys: number[] = Object.keys(selection).map(Number);
+        let coin: (string | null)[] = Object.values(selection);
+
+        selection_array =
+          coin.map((item: (string | null), index: number) => {
+              return { id: keys[index], value: item };
+          });
+    }
+
 </script>
 
 
-
-<!-- Hero section -->
-<div class="pt-8 flex content-center justify-center">
-    <div class="w-2/3 flex h-[80vh]">
+<!-- ======================[ Hero section ]============================= -->
+<section class="pt-8 flex content-center justify-center">
+    <div class="w-2/3 flex h-[80vh] mt-[10vh]">
         <div class="w-1/2 h-full flex items-center ">
             <div class="prose font-default">
-                <h1 class="my-3">Münzwurf</h1>
+                <h1 class="my-3" id="#title">Münzwurf</h1>
                 <h3 class="my-2">Die Wahrscheinlichkeiten eines Münzwurf</h3>
                 <p>
                     Finde mit uns heraus wie die Statistik eines Münzwurfs aussieht und wie wir Menschen diese
@@ -40,31 +77,76 @@
             </div>
         </div>
     </div>
-</div>
-<div class="pt-8 flex content-center justify-center">
-    <div class="w-2/3 flex h-[80vh]">
-        <div class="w-1/2 h-full flex items-center ">
-            <div class="prose font-default">
-                <h1 class="my-3">Deine Aufgabe</h1>
-                <p>
-                    Entscheide wie oft du die Münze werfen willst und wähle zwischen Kopf oder Zahl.
-                </p>
+</section>
 
-                <!-- TODO: Adjust the button to the same size as the other buttons -->
-                <div class="pt-3 my-6">
-                    <button class="btn-outer" id="8">8-Mal werfen</button>
-                    <button class="btn-outer" id="10">10-Mal werfen</button>
-                    <button class="btn-outer" id="20">20-Mal werfen</button>
+
+<!-- ======================[ Task section ]============================= -->
+
+<section class="pt-8 flex content-center justify-center mb-20">
+    <div class="w-2/3 flex h-[80vh] justify-center content-center">
+        <!-- If no scenario has been selected -->
+        {#if scenario === 0}
+            <div class="h-full flex justify-center items-center ">
+                <div class="prose font-default">
+                    <h1 class="my-3">Deine Aufgabe</h1>
+                    <p>
+                        Entscheide wie oft du die Münze werfen willst und wähle zwischen Kopf oder Zahl.
+                    </p>
+
+                    <!-- TODO: Adjust the button to the same size as the other buttons -->
+                    <div class="pt-3 my-6">
+                        <button class="btn-outer" on:click={() => {scenario = 8}} id="8">8-Mal werfen</button>
+                        <button class="btn-outer" on:click={() => {scenario = 10}} id="10">10-Mal werfen</button>
+                        <button class="btn-outer" on:click={() => {scenario = 20}} id="20">20-Mal werfen</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- TODO: Adjust the height of th SVG to th max height of the sections -->
-        <div class="w-1/2">
-            <div class="h-full w-full flex content-center justify-center">
-                <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-                {@html svgTask}
+            <div class="w-1/2 flex justify-center items-center">
+                <div class="h-fit w-fit flex content-center justify-center">
+                    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+                    {@html svgTask}
+                </div>
             </div>
-        </div>
+
+            <!-- If scenario has been selected and User is selecting Heads or Tails -->
+        {:else if scenario >= 8 && counter !== scenario}
+            <div class="flex flex-col h-full justify-center gap-24">
+                <!-- TODO: Create Head or Tails selection Card -->
+                <div class="flex flex-row gap-32 justify-center items-center">
+                    <button
+                      class="btn-outer bg-background w-[270px] h-min-[350px] flex flex-col items-center justify-center gap-5 font-default"
+                      id="Kopf"
+                      on:click={() => {counter += 1; selection[counter] ="Kopf";}}>
+                        <span class="w-[250px] h-[250px]">{@html HeadsIcon}</span>
+                        <span class="font-default prose-xl font-bold">Kopf</span>
+                    </button>
+                    <h1 class="prose text-4xl font-bold font-default">Oder</h1>
+                    <button
+                      class="btn-outer bg-background w-[270px] h-min-[350px] flex flex-col items-center justify-center gap-5 "
+                      id="Zahl"
+                      on:click={() => {counter += 1; selection[counter] ="Zahl";}}>
+                        <span class="w-[250px] h-[250px]">{@html TailsIcon}</span>
+                        <span class="font-default prose-xl font-bold">Zahl</span>
+                    </button>
+                </div>
+                <SelectionList selection_array={selection_array}></SelectionList>
+            </div>
+
+            <!-- Last Heads or Tails has been selected. Ready to review and submit -->
+        {:else if counter === scenario}
+            <h1>Finished</h1>
+
+            <SelectionList selection_array={selection_array}></SelectionList>
+            <button class="btn-outer"
+                    on:click={()=>
+                    {
+                        scenario = 0;
+                        counter = 0;
+                        selection = {}
+                    }}>
+                Submit Answer
+            </button>
+        {/if}
     </div>
-</div>
+</section>
