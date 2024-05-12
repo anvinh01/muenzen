@@ -28,7 +28,7 @@
 
 
     // Create Logic to assign Head or Tails to the selection
-    let scenario = 8;           // scenario is either 6, 10 or 20
+    let scenario = 0;           // scenario is either 6, 10 or 20
     let counter = 0;
 
     // Selection as Dict for API-call and Array for display
@@ -48,6 +48,36 @@
         selection_array =
           coin.map((item: (string | null), index: number) => {
               return { id: keys[index], value: item };
+          });
+    }
+
+    // Function to send POST Request to Backend
+    function PostSelection() {
+        // prepare Data to send to Backend
+        let data = {
+            'scenario': scenario,
+            'selection': selection
+        };
+
+        // Send POST Request to Backend
+        fetch(`http://127.0.0.1:5000/api/v1/throws/${scenario}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+          .then(response => response.json())
+          .then(data => {
+              console.log('Success:', data);
+          })
+          .catch((error) => {
+              console.error('Error:', error);
+          })
+          .finally(() => {
+              scenario = 0;
+              counter = 0;
+              selection = {};
           });
     }
 
@@ -92,7 +122,9 @@
                     <p>
                         Entscheide wie oft du die Münze werfen willst und wähle zwischen Kopf oder Zahl.
                     </p>
-
+                    {#if scenario !== 0}
+                        <p id="click">clicked</p>
+                    {/if}
                     <!-- TODO: Adjust the button to the same size as the other buttons -->
                     <div class="pt-3 my-6">
                         <button class="btn-outer" on:click={() => {scenario = 8}} id="8">8-Mal werfen</button>
@@ -116,7 +148,7 @@
                 <div class="flex flex-row gap-32 justify-center items-center">
                     <button
                       class="btn-outer bg-background w-[270px] h-min-[350px] flex flex-col items-center justify-center gap-5 font-default"
-                      id="Kopf"
+                      id="Kopf-selection"
                       on:click={() => {counter += 1; selection[counter] ="Kopf";}}>
                         <span class="w-[250px] h-[250px]">{@html HeadsIcon}</span>
                         <span class="font-default prose-xl font-bold">Kopf</span>
@@ -124,7 +156,7 @@
                     <h1 class="prose text-4xl font-bold font-default">Oder</h1>
                     <button
                       class="btn-outer bg-background w-[270px] h-min-[350px] flex flex-col items-center justify-center gap-5 "
-                      id="Zahl"
+                      id="Zahl-selection"
                       on:click={() => {counter += 1; selection[counter] ="Zahl";}}>
                         <span class="w-[250px] h-[250px]">{@html TailsIcon}</span>
                         <span class="font-default prose-xl font-bold">Zahl</span>
@@ -135,18 +167,16 @@
 
             <!-- Last Heads or Tails has been selected. Ready to review and submit -->
         {:else if counter === scenario}
-            <h1>Finished</h1>
+            <div class="flex flex-col justify-center items-center gap-20">
 
-            <SelectionList selection_array={selection_array}></SelectionList>
-            <button class="btn-outer"
-                    on:click={()=>
-                    {
-                        scenario = 0;
-                        counter = 0;
-                        selection = {}
-                    }}>
-                Submit Answer
-            </button>
+                <h1 class="prose text-4xl font-bold font-default">Fertig!</h1>
+                <SelectionList selection_array={selection_array}></SelectionList>
+                <button class="btn-outer prose text-xl font-bold font-default bg-background"
+                        on:click={PostSelection}>
+                    Bestätigen
+                </button>
+
+            </div>
         {/if}
     </div>
 </section>
