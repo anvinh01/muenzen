@@ -1,10 +1,17 @@
 from fastapi import FastAPI
 from typing import Dict
 from typing_extensions import Self
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, model_validator
+from fastapi.testclient import TestClient
 from enum import Enum
 
 app = FastAPI()
+
+
+@app.get("/")
+async def read_main():
+    return {"msg": "Hello World"}
+
 
 class CoinToss(str, Enum):
     heads = "heads"
@@ -39,9 +46,6 @@ class Throws(BaseModel):
 
 
 @app.post("/throws/")
-def create_throws(throws_data: Throws):  # throws_data is an instance of Throws
+async def create_throws(throws_data: Throws):  # throws_data is an instance of Throws
     # Your function's code here. For example:
     return {"scenario": throws_data.scenario, "selection": throws_data.selection}
-
-
-
