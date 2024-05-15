@@ -17,7 +17,7 @@ fastapi dev src/amin.py
 ```
 
 The Server will run on the Port [http://127.0.0.1:8000](http://127.0.0.1:8000)
-To see the Documentation of SwaggeUI, go to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+To see the Documentation of SwaggerUI, go to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 Look up the section Schemas and try out the API.
 
 ## Run Tests
@@ -33,4 +33,10 @@ provide the path.
 
 ### Setting up with Pycharm
 
+1. Install Requirements from requirements.txt
+2. Run Tests
+    1. On the Top Right Add a Configuration
+    2. Select pytest
+    3. Select tests/test_main.py as script
+3. Add FastAPI as a new configuration and select /src/main.py as script
 
