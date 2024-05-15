@@ -1,9 +1,9 @@
-from typing import Type
+from typing import Type, Coroutine, Any, Callable
 
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-
+import pandas as pd
 from .helper import *
 
 # Setup Database
@@ -54,9 +54,31 @@ def create_throw(db: Session, scenario: int, throw_data: any):
     return db_throw
 
 
+def get_throw(db: Session, scenario: int):
+    if scenario not in throws_models.keys():
+        raise ValueError('Num of throws can only be 8 or 10')
+    return pd.read_sql(f"SELECT * FROM toss_{scenario}", db.bind)
+
+
 def generate_post_endpoint(scenario: int, model_type: Type[BaseModel]):
     async def endpoint(throw: model_type, db: Session = Depends(get_db)):
         return create_throw(db, scenario, throw_data=throw)
+
+    return endpoint
+
+
+def generate_get_endpoint(scenario: int) -> Callable[[Session], Coroutine[Any, Any, Any]]:
+    async def endpoint(db: Session = Depends(get_db)):
+        data = get_throw(db, scenario)
+        df = pd.DataFrame(data)
+        print(df)
+        df = df.set_index('id')
+        count_heads = df.apply(lambda x: (x == 'heads').sum())
+        count_tails = df.apply(lambda x: (x == 'tails').sum())
+        mean_heads = (count_heads / (count_heads + count_tails)) * 100
+        mean_tails = (count_tails / (count_heads + count_tails)) * 100
+        return dict(mean_heads=mean_heads,
+                    mean_tails=mean_tails)
 
     return endpoint
 
@@ -67,4 +89,10 @@ for num_throws, model in throws_schema.items():
         endpoint=generate_post_endpoint(num_throws, model),
         response_model=model,
         methods=["POST"]
+    )
+
+    app.add_api_route(
+        path=f"/throws/{num_throws}",
+        endpoint=generate_get_endpoint(num_throws),
+        methods=["GET"]
     )
