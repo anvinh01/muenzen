@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 import pandas as pd
 from .helper import *
 
+
 # Setup Database
 SQLALCHEMY_DATABASE_URL = "sqlite:///./throws.db"
 engine = create_engine(
@@ -40,8 +41,18 @@ app = FastAPI()
 throws_schema = {k: create_throw_class_crud(k) for k in throws}
 
 
+def analyse_throw(df: pd.DataFrame) -> dict:
+    df = df.set_index('id')
+    count_heads = df.apply(lambda x: (x == 'heads').sum())
+    count_tails = df.apply(lambda x: (x == 'tails').sum())
+    mean_heads = (count_heads / (count_heads + count_tails)) * 100
+    mean_tails = (count_tails / (count_heads + count_tails)) * 100
+    return dict(mean_heads=mean_heads,
+                mean_tails=mean_tails)
+
+
 # Create a function, which gets called, when a POST request is made to /throws/<scenario>
-def create_throw(db: Session, scenario: int, throw_data: any):
+def create_throw(db: Session, scenario: int, throw_data: BaseModel):
     # Check if the scenario is valid
     if scenario not in throws_models.keys():
         raise ValueError('Num of throws can only be 8 or 10')
@@ -71,14 +82,8 @@ def generate_get_endpoint(scenario: int) -> Callable[[Session], Coroutine[Any, A
     async def endpoint(db: Session = Depends(get_db)):
         data = get_throw(db, scenario)
         df = pd.DataFrame(data)
-        print(df)
-        df = df.set_index('id')
-        count_heads = df.apply(lambda x: (x == 'heads').sum())
-        count_tails = df.apply(lambda x: (x == 'tails').sum())
-        mean_heads = (count_heads / (count_heads + count_tails)) * 100
-        mean_tails = (count_tails / (count_heads + count_tails)) * 100
-        return dict(mean_heads=mean_heads,
-                    mean_tails=mean_tails)
+        result = analyse_throw(df)
+        return result
 
     return endpoint
 
