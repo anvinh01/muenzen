@@ -31,6 +31,29 @@ PYTHONPATH=. pytest tests/test_main.py;
 Since our Project Structure is splitted into the code and the tests, we cannot just run "pytest" but also have to
 provide the path.
 
+### Coverage
+
+To run a coverage Test run:
+
+```
+PYTHONPATH=. coverage run -m pytest tests/test_main.py; 
+```
+
+and then the report:
+
+```
+coverage report -m
+```
+
+or create a html report with
+
+```
+coverage html
+```
+
+This will create a htmlcov/ directory with an index.html file in it.
+Upon running the index.html file you can see the test coverage report as a website.
+
 ### Setting up with Pycharm
 
 1. Install Requirements from requirements.txt

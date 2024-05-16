@@ -100,13 +100,14 @@ def test_get_throws(mock_db_session, test_cases):
         assert isinstance(response, dict)
         assert (response["mean_heads"] + response["mean_tails"] == 100).all()
 
-        # extend the dataframe with the flipped version of the original dataframe
+        # Create a dataframe with only heads
         df_tails = df.copy()
         df_tails[df_tails == "heads"] = "tails"
         response = analyse_throw(df_tails)
         assert (response["mean_heads"] == 0).all()
         assert (response["mean_tails"] == 100).all()
 
+        # Create a dataframe with only tails
         df_heads = df_tails.copy()
         df_heads[df_heads == "tails"] = "heads"
         response = analyse_throw(df_heads)
