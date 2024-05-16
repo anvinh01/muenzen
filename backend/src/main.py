@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import pandas as pd
 from .helper import *
-
+from fastapi.middleware.cors import CORSMiddleware
 '''
 This file contains the code for the FastAPI server.
 It also contains the code for the CRUD operations.
@@ -64,6 +64,19 @@ Base.metadata.create_all(bind=engine)
 
 # Create a FastAPI instance
 app = FastAPI()
+
+origins = [
+    "http://localhost:5173",  # Allow this origin
+]
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Allow origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 # Create the Schema for 8, 10 and 20 throws
 throws_schema = {k: create_throw_class_crud(k) for k in throws}
