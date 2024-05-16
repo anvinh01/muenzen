@@ -33,7 +33,7 @@
 
     // Selection as Dict for API-call and Array for display
     let selection: Record<string, string | null> = {};
-    let selection_array: { id: number; value: string | null }[] = [];
+		let selection_array: { id: string; value: string | null }[] = [];
 
     // Fill up the selection with null values when the scenario changes
     $: for (let i = 1; i <= scenario; i++) {
@@ -42,7 +42,7 @@
 
     // Change the selection from dictionary to array to display
     $: {
-        let keys: number[] = Object.keys(selection).map(Number);
+			let keys: string[] = Object.keys(selection).map(String);
         let coin: (string | null)[] = Object.values(selection);
 
         selection_array =
@@ -55,9 +55,9 @@
     function PostSelection() {
         // prepare Data to send to Backend
         let data = selection;
-
+			console.log(data);
         // Send POST Request to Backend
-        fetch(`http://127.0.0.1:5000/api/v1/throws/${scenario}`, {
+			fetch(`http://127.0.0.1:8001/throws/${scenario}/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -146,7 +146,7 @@
                     <button
                       class="btn-outer bg-background w-[270px] h-min-[350px] flex flex-col items-center justify-center gap-5 font-default"
                       id="Kopf-selection"
-                      on:click={() => {counter += 1; selection[counter] ="Kopf";}}>
+											on:click={() => {counter += 1; selection[`throw_${counter}`] ="heads";}}>
                         <span class="w-[250px] h-[250px]">{@html HeadsIcon}</span>
                         <span class="font-default prose-xl font-bold">Kopf</span>
                     </button>
@@ -154,7 +154,7 @@
                     <button
                       class="btn-outer bg-background w-[270px] h-min-[350px] flex flex-col items-center justify-center gap-5 "
                       id="Zahl-selection"
-                      on:click={() => {counter += 1; selection[counter] ="Zahl";}}>
+											on:click={() => {counter += 1; selection[`throw_${counter}`] ="tails";}}>
                         <span class="w-[250px] h-[250px]">{@html TailsIcon}</span>
                         <span class="font-default prose-xl font-bold">Zahl</span>
                     </button>
