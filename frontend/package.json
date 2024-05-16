@@ -10,8 +10,6 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "vitest": "vitest",
     "start": "my-server -p 3030",
-    "cy:run": "cypress run",
-    "test": "start-server-and-test start http://localhost:3030 cy:run",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write ."
   },
@@ -24,7 +22,6 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "autoprefixer": "^10.4.19",
-    "cypress": "^13.8.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-svelte": "^2.35.1",

@@ -32,12 +32,12 @@
     let counter = 0;
 
     // Selection as Dict for API-call and Array for display
-    let selection: Record<number, string | null> = {};
+    let selection: Record<string, string | null> = {};
     let selection_array: { id: number; value: string | null }[] = [];
 
     // Fill up the selection with null values when the scenario changes
     $: for (let i = 1; i <= scenario; i++) {
-        selection[i] = null;
+        selection[`throw_${i}`] = null;
     }
 
     // Change the selection from dictionary to array to display
@@ -54,10 +54,7 @@
     // Function to send POST Request to Backend
     function PostSelection() {
         // prepare Data to send to Backend
-        let data = {
-            'scenario': scenario,
-            'selection': selection
-        };
+        let data = selection;
 
         // Send POST Request to Backend
         fetch(`http://127.0.0.1:5000/api/v1/throws/${scenario}`, {
