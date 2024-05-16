@@ -1,3 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Taviraj:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root{
+    --background: #F2ECDA;
+    --neutral: #47192C;
+    --primary: #DCB18F;
+    --primary-dark: #B38E70;
+    --white: #FEFBF6;
+
+}
+
+html{
+    background-color: var(--background);
+}
+
+@layer components {
+
+    .btn-outer {
+        @apply flex items-center no-underline justify-center w-fit h-fit bg-primary px-7 py-2
+        border-2 rounded-lg border-neutral border-r-4 border-b-4
+        transition-all hover:border-r-2 hover:border-b-2 hover:mt-[2px] hover:ml-[2px];
+    }
+
+}
