@@ -33,6 +33,3 @@ run_tests:
       coverage_report:
         coverage_format: cobertura
         path: backend/tests/coverage.xml
-
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
