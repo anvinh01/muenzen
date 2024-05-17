@@ -1,0 +1,12 @@
+fastapi==0.111.0
+pytest==8.2.0
+coverage==7.5.1
+fastapi-cli==0.0.3
+httpx==1.0.0b0
+uvicorn==0.29.0
+pydantic==2.7.1
+python-multipart==0.0.9
+starlette==0.37.2
+typing_extensions~=4.11.0
+SQLAlchemy~=2.0.30
+pandas~=2.2.2

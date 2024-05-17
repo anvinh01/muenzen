@@ -55,7 +55,7 @@
     function PostSelection() {
         // prepare Data to send to Backend
         let data = selection;
-			console.log(data);
+        console.log(data);
         // Send POST Request to Backend
 			fetch(`http://127.0.0.1:8001/throws/${scenario}/`, {
             method: 'POST',
@@ -80,8 +80,8 @@
 
 </script>
 
+<!-- ===============================[ Hero section ]========================================= -->
 
-<!-- ======================[ Hero section ]============================= -->
 <section class="pt-8 flex content-center justify-center">
     <div class="w-2/3 flex h-[80vh] mt-[10vh]">
         <div class="w-1/2 h-full flex items-center ">
@@ -106,8 +106,30 @@
     </div>
 </section>
 
+<!-- ===============================[ Explanation section ]====================================== -->
 
-<!-- ======================[ Task section ]============================= -->
+<section class="flex items-center justify-center">
+    <div class="w-2/3 flex h-[60vh] justify-center items-center">
+        <div class="w-1/2">
+            <div class="w-1/2">
+                <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+                {@html svgTask}
+            </div>
+        </div>
+        <div class="w-1/2 h-full flex items-center ">
+            <div class="prose font-default">
+                <h1 class="my-3" id="#title">Unser Ziel</h1>
+                <p>
+                    Wir wollen zusammen herausfinden, wie eine Person den Zufall einschätzen. Kommt zuerst Kopf? Zahl?
+                    Wie oft denkst du denn kann ein Ergebnis hintereinander vorkommen?
+                    Untersuche mit uns wie wir den Zufall auffassen und wie du einen Münzwurf einschätzt.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======================================[ Task section ]======================================== -->
 
 <section class="pt-8 flex content-center justify-center mb-20">
     <div class="w-2/3 flex h-[80vh] justify-center content-center">
