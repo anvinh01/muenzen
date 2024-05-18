@@ -93,7 +93,7 @@
                     Wahrscheinlichkeiten einschätzen.
                 </p>
                 <div class="pt-3 my-6">
-                    <a class="btn-outer" href="#scenario">Zum Münzwurf</a>
+                    <a class="btn-outer" href="#Münzwurf">Zum Münzwurf</a>
                 </div>
             </div>
         </div>
@@ -131,7 +131,7 @@
 
 <!-- ======================================[ Task section ]======================================== -->
 
-<section class="pt-8 flex content-center justify-center mb-20">
+<section id="Münzwurf" class="pt-8 flex content-center justify-center mb-20">
     <div class="w-2/3 flex h-[80vh] justify-center content-center">
         <!-- If no scenario has been selected -->
         {#if scenario === 0}
