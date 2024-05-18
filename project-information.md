@@ -53,9 +53,27 @@ Obwohl es eine Relationale Datenbank ist, werden keine Relationen Existieren.
 # Frontend UI
 Es wird eine Single Page Applikation erstellt, welches die Kriterien vom User-flow Diagramm erfüllen soll. 
 Ein Mockup liegt bereits in Figma vor.
+
+## User-flow diagramm
 ![Sequenz](/Docs/Frontend%20Sequenz%20Diagramm.png)
 
+## Design Mockups
 
+Das Design sollte ein Papier gefühl liefern und relativ minimal sein, damit sich die Schüler darauf fokussieren können
+
+### Hero Sektion
+
+![Here-section](/Docs/design/hero_section.png)
+
+### About-us Sektion
+
+![About-us-section](/Docs/design/about_us_section.png)
+
+### Münzwurf Sektion
+
+![münzwurf-1-section](/Docs/design/Münzwurf-1.png)
+![münzwurf-2-section](/Docs/design/Münzwurf-2.png)
+![münzwurf-3-section](/Docs/design/Münzwurf-3.png)
 
 
 
