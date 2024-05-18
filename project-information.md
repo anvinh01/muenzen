@@ -1,4 +1,21 @@
-
+# Projekt Information
+## Inhaltsverzeichnis
+1. Münzen werfen
+   - Beschreibung
+   - User-Kriterien
+2. Backend
+    - Techstack
+      - Python
+      - Fast-APi
+      - SQL-Lite / SQL-Alchemy
+      - Pytest / Coverage.py
+3. Frontend
+    - Techstack
+      - Svelte
+      - Tailwindcss
+      - Playwrigth
+    - Sequence diagramm
+    - Design Mockup
 # Münzen Werfen
 
 ## Beschreibung
@@ -22,7 +39,8 @@ Der User soll ...
 ![User-flow Diagramm](/Docs/Userflow-diagram.svg)
 Der Benutzer hat einen gradlinigen Ablauf.
 
-# Backend Dataflow
+# Backend
+## Techstack
 Durch den kleinen Umfang der Applikation wird eine schnelle und minimale API benötigt. 
 Diese API muss keine User-Authentifizierung durchführen und nur in der lage sein, ein 
 POST request der Daten anzunehmen und ein GET für Request der Statistik zu verarbeiten.
@@ -30,7 +48,7 @@ POST request der Daten anzunehmen und ein GET für Request der Statistik zu vera
 Der Hauptfokus der Applikation soll die Verarbeitung der gesammelten Daten sein, weshalb
 mathematische Funktionen vom Vorteil sind. Unsere Auswahl für die Technologien wird Python mit folgenden Modulen sein.
 
-## Python
+### Python
 Python ist eines der meist benutzen Programmiersprachen laut einer 
 [Stackoverflow Survey 2023](https://survey.stackoverflow.co/2023/#technology-most-popular-technologies).
 Die Ruhr-Universität-Bochum bietet eine große Auswahl an Modulen an, in welchen die Studenten 
@@ -40,17 +58,21 @@ schneller möglich ist.
 Zudem ist Python auch eine bekannte Sprache, die in vielen Fällen für das Backend development von Web-Applikationen 
 benutzt wird. 
 
-## Fast-API
+### Fast-API
 [Fast-API](https://fastapi.tiangolo.com) ist ein lightweight Web Framework für Rest-API Development. Es ist bekannt für die
 antwort geschwindigkeit der APIs, welches so schnell ist wie NodeJS oder GO. Dabei ist die Einarbeitung Zeit
 und Development Zeit für kleine Projekte sehr schnell, weshalb es für unser Projekt sehr geeignet ist, da unser
 Projekt aus 2 API schnittstellen besteht und nicht weiter skalieren muss.
 
-## SQL Lite
+### SQL Lite / SQL-Alchemy
 Durch die Verwendung von SQL-Alchemy und einer relationalen Datenbank (SQL Lite) werden die gesammelten Daten gespeichert.
 Obwohl es eine Relationale Datenbank ist, werden keine Relationen Existieren. 
 
-# Frontend UI
+### Pytest / Coverage.py
+Zum testen haben wir Pytest benutzt, welches das Testen von FastAPI unterstützt. Zudem verwenden wir 
+Coverage.py, um einzusehen wie viel Prozent unserer Anwendung wir bereits getestet haben.
+
+# Frontend
 Es wird eine Single Page Applikation erstellt, welches die Kriterien vom User-flow Diagramm erfüllen soll. 
 Ein Mockup liegt bereits in Figma vor.
 
