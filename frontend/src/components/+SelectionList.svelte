@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { fade } from "svelte/transition";
 
 	// SVG names
 	let QuestionIcon: string = '';
@@ -22,8 +21,6 @@
 		QuestionIcon = await res3.text();
 	});
 
-	let icons = {"question-icon": QuestionIcon, "heads": HeadsIcon, "tails": TailsIcon};
-
 	// Set the selection_array to a prop and as an empty array per default
 	export let selection_array: { id: string; value: string | null }[] = [];
 </script>
@@ -31,7 +28,7 @@
 
 <ul class="flex gap-4 justify-between">
 	<!-- Going through the selection_array array and displaying the correct icon for each coin. -->
-	{#each selection_array as coin, itemindex}
+	{#each selection_array as coin}
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		<div class="card w-[100px] h-[100px] group transition-all flip-card {coin.value ? 'active' : 'neutral'}">
 			<div class="flip-card-inner">
