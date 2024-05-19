@@ -5,6 +5,9 @@ export default {
         colors: {
           "background": "var(--background)",
             "primary": "var(--primary)",
+            "primary-dark": "var(--primary-dark)",
+            "secondary": "var(--secondary)",
+            "secondary-dark": "var(--secondary-dark)",
             "neutral": "var(--neutral)",
             "white": "var(--white)",
         },
