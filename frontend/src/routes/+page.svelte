@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import SelectionList from '../components/+SelectionList.svelte'; // Adjusted import
+    import { fade } from'svelte/transition';
+
 
     // SVG names
     let svgHero: string = '';
@@ -83,7 +85,7 @@
 <!-- ===============================[ Hero section ]========================================= -->
 
 <section class="pt-8 flex content-center justify-center">
-    <div class="w-2/3 flex h-[80vh] mt-[10vh]">
+    <div class="w-2/3 flex mobile:flex-col h-min-[80vh] mt-[10vh]">
         <div class="w-1/2 h-full flex items-center ">
             <div class="prose font-default">
                 <h1 class="my-3" id="#title">Münzwurf</h1>
@@ -97,8 +99,8 @@
                 </div>
             </div>
         </div>
-        <div class="w-1/2">
-            <div class="w-1/2">
+        <div class="w-1/2 h-fit">
+            <div class="h-fit">
                 <!-- eslint-disable-next-line svelte/no-at-html-tags -->
                 {@html svgHero}
             </div>
@@ -109,14 +111,14 @@
 <!-- ===============================[ Explanation section ]====================================== -->
 
 <section class="flex items-center justify-center">
-    <div class="w-2/3 flex h-[60vh] justify-center items-center">
+    <div class="w-3/4 flex h-[60vh] justify-center items-center gap-5">
         <div class="w-1/2">
-            <div class="w-1/2">
+            <div class="w-fit">
                 <!-- eslint-disable-next-line svelte/no-at-html-tags -->
                 {@html svgTask}
             </div>
         </div>
-        <div class="w-1/2 h-full flex items-center ">
+        <div class="w-1/2 h-full flex items-center">
             <div class="prose font-default">
                 <h1 class="my-3" id="#title">Unser Ziel</h1>
                 <p>
@@ -132,10 +134,11 @@
 <!-- ======================================[ Task section ]======================================== -->
 
 <section id="Münzwurf" class="pt-8 flex content-center justify-center mb-20">
-    <div class="w-2/3 flex h-[80vh] justify-center content-center">
+    <div class="w-3/4 flex h-[80vh] justify-center content-center gap-5">
         <!-- If no scenario has been selected -->
         {#if scenario === 0}
-            <div class="h-full flex justify-center items-center ">
+    
+            <div class="h-full flex justify-center items-center " in:fade>
                 <div class="prose font-default">
                     <h1 class="my-3">Deine Aufgabe</h1>
                     <p>
@@ -145,8 +148,8 @@
                         <p id="click">clicked</p>
                     {/if}
                     <!-- TODO: Adjust the button to the same size as the other buttons -->
-                    <div class="pt-3 my-6">
-                        <button class="btn-outer" on:click={() => {scenario = 8}} id="8">8-Mal werfen</button>
+                    <div class="pt-3 my-6 w-fit flex flex-wrap gap-2 justify-center">
+                        <button class="btn-outer" on:click={() => {scenario = 8}} id="8">&nbsp 8-Mal werfen</button>
                         <button class="btn-outer" on:click={() => {scenario = 10}} id="10">10-Mal werfen</button>
                         <button class="btn-outer" on:click={() => {scenario = 20}} id="20">20-Mal werfen</button>
                     </div>
@@ -159,10 +162,9 @@
                     {@html svgTask}
                 </div>
             </div>
-
             <!-- If scenario has been selected and User is selecting Heads or Tails -->
         {:else if scenario >= 8 && counter !== scenario}
-            <div class="flex flex-col h-full justify-center gap-24">
+            <div class="flex flex-col h-full justify-center gap-24" in:fade>
                 <!-- TODO: Create Head or Tails selection Card -->
                 <div class="flex flex-row gap-32 justify-center items-center">
                     <button
@@ -186,7 +188,7 @@
 
             <!-- Last Heads or Tails has been selected. Ready to review and submit -->
         {:else if counter === scenario}
-            <div class="flex flex-col justify-center items-center gap-20">
+            <div class="flex flex-col justify-center items-center gap-20" in:fade>
 
                 <h1 class="prose text-4xl font-bold font-default">Fertig!</h1>
                 <SelectionList selection_array={selection_array}></SelectionList>
