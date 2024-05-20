@@ -81,7 +81,7 @@
         let data = selection;
         console.log(data);
         // Send POST Request to Backend
-			fetch(`http://127.0.0.1:8001/throws/${scenario}/`, {
+			fetch(`http://127.0.0.1:8000/throws/${scenario}/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -228,11 +228,12 @@
 
 <section class="mb-20 flex items-center justify-center">
     <div class="w-3/4 flex h-[60vh] justify-center items-center gap-5">
-        <div class="w-1/2 h-full border flex flex-col justify-around">
+        <div class="w-1/2 h-full border-y border-l flex flex-col justify-around">
             {#each Object.keys(mean_heads) as key, index}
-                <div class="w-full flex h-full border">
-                    <div style="width: {mean_heads[key]}%;" class="bg-secondary h-full overflow-hidden content-center"><p>{index + 1}: {mean_heads[key].toFixed(2)} %</p></div>
-                    <div style="width: {mean_tails[key]}%;" class="bg-primary h-full overflow-hidden content-center"><p>{index + 1}: {mean_tails[key].toFixed(2)} %</p></div>
+                <div class="w-full flex h-full">
+                    <div class="w-fit px-3 border-r content-center"><h1>{index}: </h1></div>
+                    <div style="width: {mean_heads[key]}%;" class="bg-secondary h-full overflow-hidden content-center border-y"><p class="px-5">Heads: {mean_heads[key].toFixed(2)} %</p></div>
+                    <div style="width: {mean_tails[key]}%;" class="bg-primary h-full overflow-hidden content-center border-y"><p class="px-5">Tails: {mean_tails[key].toFixed(2)} %</p></div>
                 </div>
             {/each}
         </div>
