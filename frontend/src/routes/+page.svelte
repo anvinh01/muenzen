@@ -2,8 +2,6 @@
     import { onMount } from 'svelte';
     import SelectionList from '../components/+SelectionList.svelte'; // Adjusted import
     import { fade } from'svelte/transition';
-
-
     // SVG names
     let svgHero: string = '';
     let svgTask: string = '';
@@ -105,8 +103,8 @@
 </script>
 
 <!-- ===============================[ Hero section ]========================================= -->
-
-<section class="pt-8 flex content-center justify-center">
+{#key scenario}
+    <section class="pt-8 flex content-center justify-center" transition:blur>
     <div class="w-2/3 flex mobile:flex-col h-min-[80vh] mt-[10vh]">
         <div class="w-1/2 h-full flex items-center ">
             <div class="prose font-default">
@@ -129,10 +127,10 @@
         </div>
     </div>
 </section>
-
+{/key}
 <!-- ===============================[ Explanation section ]====================================== -->
 
-<section class="flex items-center justify-center">
+<section class="flex items-center justify-center" transition:blur>
     <div class="w-3/4 flex h-[60vh] justify-center items-center gap-5">
         <div class="w-1/2">
             <div class="w-fit">
@@ -154,8 +152,8 @@
 </section>
 
 <!-- ======================================[ Task section ]======================================== -->
-
-<section id="Münzwurf" class="pt-8 flex content-center justify-center mb-20">
+{#key scenario}
+    <section id="Münzwurf" class="pt-8 flex content-center justify-center mb-20" transition:fade>
     <div class="w-3/4 flex h-[80vh] justify-center content-center gap-5">
         <!-- If no scenario has been selected -->
         {#if scenario === 0}
@@ -223,6 +221,7 @@
         {/if}
     </div>
 </section>
+{/key}
 
 <!-- ===============================[ Analysis section ]====================================== -->
 
