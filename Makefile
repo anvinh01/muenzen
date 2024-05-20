@@ -20,8 +20,10 @@ tests:
 	PYTHONPATH=./backend/ pytest ./backend/tests/test_main.py;
 	make -j 2 dev-frontend E2E
 
+dev-backend:
+	fastapi dev ./backend/src/main.py
+
 dev:
 	make install
-	fastapi dev ./backend/src/main.py
-	npm run --prefix ./frontend dev
+	make -j 2 dev-frontend dev-backend
 

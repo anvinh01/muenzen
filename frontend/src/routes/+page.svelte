@@ -2,6 +2,8 @@
     import { onMount } from 'svelte';
     import SelectionList from '../components/+SelectionList.svelte'; // Adjusted import
     import { fade } from'svelte/transition';
+    import Analysis from "../components/Analysis.svelte";
+    import {writable} from "svelte/store";
     // SVG names
     let svgHero: string = '';
     let svgTask: string = '';
@@ -26,33 +28,17 @@
         TailsIcon = await res4.text();
     });
 
+    // Create a writable store
+    let fetchTrigger = writable(false);
 
+    // Function to set fetchTrigger to true
+    function handleClick() {
+        fetchTrigger.set(true);
+    }
     // Create Logic to assign Head or Tails to the selection
-    let scenario = 0;           // scenario is either 6, 10 or 20
-    let counter = 0;
-    let {mean_heads, mean_tails} : Record<string, Record<string,number>> =
-    {
-        "mean_heads": {
-        "throw_1": 33.33333333333333,
-          "throw_2": 100,
-          "throw_3": 33.33333333333333,
-          "throw_4": 33.33333333333333,
-          "throw_5": 33.33333333333333,
-          "throw_6": 66.66666666666666,
-          "throw_7": 33.33333333333333,
-          "throw_8": 100
-    },
-        "mean_tails": {
-        "throw_1": 66.66666666666666,
-          "throw_2": 0,
-          "throw_3": 66.66666666666666,
-          "throw_4": 66.66666666666666,
-          "throw_5": 66.66666666666666,
-          "throw_6": 33.33333333333333,
-          "throw_7": 66.66666666666666,
-          "throw_8": 0
-    }
-    }
+    let scenario: number = 0;           // scenario is either 6, 10 or 20
+    let counter: number = 0;
+
     // Selection as Dict for API-call and Array for display
     let selection: Record<string, string | null> = {};
 		let selection_array: { id: string; value: string | null }[] = [];
@@ -97,6 +83,7 @@
               scenario = 0;
               counter = 0;
               selection = {};
+              handleClick();
           });
     }
 
@@ -225,27 +212,6 @@
 
 <!-- ===============================[ Analysis section ]====================================== -->
 
-<section class="mb-20 flex items-center justify-center">
-    <div class="w-3/4 flex h-[60vh] justify-center items-center gap-5">
-        <div class="w-1/2 h-full border-y border-l flex flex-col justify-around">
-            {#each Object.keys(mean_heads) as key, index}
-                <div class="w-full flex h-full">
-                    <div class="w-fit px-3 border-r content-center"><h1>{index}: </h1></div>
-                    <div style="width: {mean_heads[key]}%;" class="bg-secondary h-full overflow-hidden content-center border-y"><p class="px-5">Heads: {mean_heads[key].toFixed(2)} %</p></div>
-                    <div style="width: {mean_tails[key]}%;" class="bg-primary h-full overflow-hidden content-center border-y"><p class="px-5">Tails: {mean_tails[key].toFixed(2)} %</p></div>
-                </div>
-            {/each}
-        </div>
-        <div class="w-1/2 h-full flex items-center">
-            <div class="prose font-default">
-                <h1 class="my-3" id="#title">Analyse</h1>
-                <p>
-                    Wir wollen zusammen herausfinden, wie eine Person den Zufall einschätzen. Kommt zuerst Kopf? Zahl?
-                    Wie oft denkst du denn kann ein Ergebnis hintereinander vorkommen?
-                    Untersuche mit uns wie wir den Zufall auffassen und wie du einen Münzwurf einschätzt.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
+<Analysis analysis={8} {fetchTrigger}></Analysis>
+
 
