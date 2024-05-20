@@ -17,7 +17,8 @@ E2E:
 
 tests:
 	make install
-	PYTHONPATH=./backend/ pytest ./backend/tests/test_main.py;
+	PYTHONPATH=./backend/ coverage run -m pytest ./backend/tests/test_main.py;
+	coverage xml
 	make -j 2 dev-frontend E2E
 
 dev-backend:
@@ -27,3 +28,6 @@ dev:
 	make install
 	make -j 2 dev-frontend dev-backend
 
+clean:
+	rm -f coverage.* .coverage ./backend/*.db ./backend/.coverage ./backend/tests/*.db
+	rm -f -r ./env ./E2E-tests/env ./backend/env ./backend/htmlcov ./frontend/node_modules

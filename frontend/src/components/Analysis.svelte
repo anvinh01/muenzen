@@ -1,8 +1,4 @@
 <script lang="ts">
-    import {createEventDispatcher} from 'svelte';
-
-    const dispatch = createEventDispatcher();
-
     import {onMount} from "svelte";
 
     export let fetchTrigger;
@@ -36,7 +32,7 @@
 
 
 {#if analysis_data}
-    <section role="region" class="mb-20 flex items-center justify-center">
+    <section class="mb-20 flex items-center justify-center">
         <div class="w-3/4 flex h-[60vh] justify-center items-center gap-5">
             <div class="w-1/2 h-full gap-5 flex flex-col justify-around items-center">
                 <div class="w-full flex h-full justify-between items-center">

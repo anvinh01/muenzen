@@ -4,11 +4,13 @@
     import { fade } from'svelte/transition';
     import Analysis from "../components/Analysis.svelte";
     import {writable} from "svelte/store";
+
     // SVG names
     let svgHero: string = '';
     let svgTask: string = '';
     let HeadsIcon: string = '';
     let TailsIcon: string = '';
+
     // Fetch the SVGs from public/assets/ when the component is mounted
     onMount(async () => {
         // import the SVG for the hero section
