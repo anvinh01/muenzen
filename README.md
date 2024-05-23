@@ -1,6 +1,21 @@
 # Münzen-Projekt
 Das Ziel vom Projekt wird es eine Website zu erstellen, die den Lehrern dabei behilflich sein kann die Statistiken vom Münzwurf zu erklären.
 
+## Set-Up
+
+Um die Anwendung zu Testen, soll in CMD
+
+```commandline
+make tests
+```
+
+eingegeben werden. Die ganze Anwendung (Frontend und Backend) wird mit
+
+```commandline
+make dev
+```
+
+in Developer modus gestartet.
 ## Anforderung
 Unsere Website soll folgende Anforderungen vom Kunden erfüllen:
 - [ ] Schüler/innen können interaktiv Münzen werfen (8-, 10-, 20-Mal).

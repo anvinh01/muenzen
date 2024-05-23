@@ -2,13 +2,15 @@
     import { onMount } from 'svelte';
     import SelectionList from '../components/+SelectionList.svelte'; // Adjusted import
     import { fade } from'svelte/transition';
-
+    import Analysis from "../components/Analysis.svelte";
+    import {writable} from "svelte/store";
 
     // SVG names
     let svgHero: string = '';
     let svgTask: string = '';
     let HeadsIcon: string = '';
     let TailsIcon: string = '';
+
     // Fetch the SVGs from public/assets/ when the component is mounted
     onMount(async () => {
         // import the SVG for the hero section
@@ -28,10 +30,16 @@
         TailsIcon = await res4.text();
     });
 
+    // Create a writable store
+    let fetchTrigger = writable(false);
 
+    // Function to set fetchTrigger to true
+    function handleClick() {
+        fetchTrigger.set(true);
+    }
     // Create Logic to assign Head or Tails to the selection
-    let scenario = 0;           // scenario is either 6, 10 or 20
-    let counter = 0;
+    let scenario: number = 0;           // scenario is either 6, 10 or 20
+    let counter: number = 0;
 
     // Selection as Dict for API-call and Array for display
     let selection: Record<string, string | null> = {};
@@ -59,7 +67,7 @@
         let data = selection;
         console.log(data);
         // Send POST Request to Backend
-			fetch(`http://127.0.0.1:8001/throws/${scenario}/`, {
+			fetch(`http://127.0.0.1:8000/throws/${scenario}/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -77,14 +85,15 @@
               scenario = 0;
               counter = 0;
               selection = {};
+              handleClick();
           });
     }
 
 </script>
 
 <!-- ===============================[ Hero section ]========================================= -->
-
-<section class="pt-8 flex content-center justify-center">
+{#key scenario}
+    <section class="pt-8 flex content-center justify-center" transition:blur>
     <div class="w-2/3 flex mobile:flex-col h-min-[80vh] mt-[10vh]">
         <div class="w-1/2 h-full flex items-center ">
             <div class="prose font-default">
@@ -107,10 +116,10 @@
         </div>
     </div>
 </section>
-
+{/key}
 <!-- ===============================[ Explanation section ]====================================== -->
 
-<section class="flex items-center justify-center">
+<section class="flex items-center justify-center" transition:blur>
     <div class="w-3/4 flex h-[60vh] justify-center items-center gap-5">
         <div class="w-1/2">
             <div class="w-fit">
@@ -132,8 +141,8 @@
 </section>
 
 <!-- ======================================[ Task section ]======================================== -->
-
-<section id="Münzwurf" class="pt-8 flex content-center justify-center mb-20">
+{#key scenario}
+    <section id="Münzwurf" class="pt-8 flex content-center justify-center mb-20" transition:fade>
     <div class="w-3/4 flex h-[80vh] justify-center content-center gap-5">
         <!-- If no scenario has been selected -->
         {#if scenario === 0}
@@ -201,3 +210,10 @@
         {/if}
     </div>
 </section>
+{/key}
+
+<!-- ===============================[ Analysis section ]====================================== -->
+
+<Analysis analysis={8} {fetchTrigger}></Analysis>
+
+
