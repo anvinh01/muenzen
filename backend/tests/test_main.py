@@ -3,8 +3,8 @@ from unittest.mock import MagicMock
 import pandas as pd
 from fastapi.testclient import TestClient
 
-from src.main import app, analyse_throw
-from src.helper import CoinToss
+from backend.src.main import app, analyse_throw
+from backend.src.helper import (CoinToss)
 from random import choice
 
 client = TestClient(app)
@@ -26,7 +26,7 @@ def create_dataframe(num_throws: int) -> pd.DataFrame:
     num_rows = 100
     return pd.DataFrame(
         {"id" if k == 0 else k: [choice(coin) for _ in range(num_rows)]
-         for k in range(0, num_throws + 1)}
+         for k in range(1, num_throws + 1)}
     )
 
 
@@ -94,6 +94,7 @@ def test_creat_throws_invalid_value(mock_db_session, test_cases):
 
 def test_get_throws(mock_db_session, test_cases):
     for num_throws in test_cases:
+        print("num_throws", num_throws)
         test_data = create_dataframe(num_throws)
         df = pd.DataFrame(test_data)
         response = analyse_throw(df)

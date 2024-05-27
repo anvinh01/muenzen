@@ -1,6 +1,6 @@
 import unittest.mock
 import pytest
-from src.main import app, get_db
+from backend.src.main import app, get_db
 
 mock_session = unittest.mock.MagicMock()
 

@@ -91,7 +91,7 @@ throws_schema = {k: create_throw_class_crud(k) for k in throws}
 def analyse_throw(df: pd.DataFrame) -> dict:
     # This is the function, which is called when a GET request is made to /throws/<scenario>
     # Analyse the dataframe and return the analysis of the dataframe as a dictionary
-    df = df.set_index('id')  # Set the index of the dataframe to id
+    # df = df.set_index('id')  # Set the index of the dataframe to id
 
     # Count the number of heads and tails in the dataframe
     count_heads = df.apply(lambda x: (x == 'heads').sum())
@@ -102,7 +102,7 @@ def analyse_throw(df: pd.DataFrame) -> dict:
     mean_tails = (count_tails / (count_heads + count_tails)) * 100
 
     # Look up if there are any repetitions in the dataframe
-    dataframe = consecutive_values(df)
+    consecutive_heads, consecutive_tails = consecutive_values(df)
 
     # Other analysis of the dataframe
     pass  # <---- Your Code goes here --->
@@ -110,9 +110,10 @@ def analyse_throw(df: pd.DataFrame) -> dict:
     # Return a dictionary with the mean heads and mean tails as keys and the values
     response = dict(
         mean_heads=mean_heads,
-        mean_tails=mean_tails
+        mean_tails=mean_tails,
+        consecutive_heads=consecutive_heads,
+        consecutive_tails=consecutive_tails,
     )
-
     return response
 
 

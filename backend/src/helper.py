@@ -92,15 +92,36 @@ def create_throw_class_crud(n: int):
 
 
 # ===================================[ Dataframes functions ]==================================
+def len_iter(items):
+    return sum(1 for _ in items)
 
-def consecutive_values(df: pd.DataFrame) -> tuple(list, list):
-    def len_iter(items):
-        return sum(1 for _ in items)
 
-    def consecutive_helper(data, bin_val):
-        return list((len_iter(run) for val, run in groupby(data) if val == bin_val), default=0)
+def consecutive_helper(data, bin_val):
+    return max((len_iter(run) for val, run in groupby(data) if val == bin_val), default=0)
+
+
+def consecutive_values(df: pd.DataFrame) -> tuple[list, list]:
 
     consecutive_heads = df.apply(consecutive_helper, bin_val="heads", axis=1)
     consecutive_tails = df.apply(consecutive_helper, bin_val="tails", axis=1)
+
+    consecutive_tails_mean = consecutive_tails.mean()
+    consecutive_heads_mean = consecutive_heads.mean()
+
+    consecutive_heads_std = consecutive_heads.std()
+    consecutive_tails_std = consecutive_tails.std()
+
+    consecutive_heads_number = (consecutive_heads.value_counts() * 100 // consecutive_heads.count()).to_dict()
+    consecutive_heads_number = {number: consecutive_heads_number[number] if number in consecutive_heads_number else 0
+                                for number in
+                                range(1, len(df.keys()) + 1)}
+
+    print(f"{consecutive_heads.count()}: consecutive: heads", consecutive_heads_number)
+
+    '''
+    print("consecutive: heads", consecutive_heads_mean)
+    print("consecutive: heads std", consecutive_heads_std)
+    print("consecutive: heads number", consecutive_heads_number)
+    '''
 
     return consecutive_heads, consecutive_tails
