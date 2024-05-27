@@ -1,4 +1,6 @@
 import enum
+from itertools import groupby
+import pandas as pd
 from pydantic import BaseModel, create_model, Field, field_validator
 from sqlalchemy import Column, Integer, Enum
 
@@ -87,3 +89,18 @@ def create_throw_class_crud(n: int):
     # Create new model_type class by using `create_model`
     # It accepts class name as first parameter, and then unpack your fields dictionary
     return create_model(f'ThrowCreate{n}', **fields, __base__=ThrowBase)
+
+
+# ===================================[ Dataframes functions ]==================================
+
+def consecutive_values(df: pd.DataFrame) -> tuple(list, list):
+    def len_iter(items):
+        return sum(1 for _ in items)
+
+    def consecutive_helper(data, bin_val):
+        return list((len_iter(run) for val, run in groupby(data) if val == bin_val), default=0)
+
+    consecutive_heads = df.apply(consecutive_helper, bin_val="heads", axis=1)
+    consecutive_tails = df.apply(consecutive_helper, bin_val="tails", axis=1)
+
+    return consecutive_heads, consecutive_tails

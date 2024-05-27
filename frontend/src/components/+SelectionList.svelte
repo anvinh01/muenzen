@@ -26,7 +26,7 @@
 </script>
 
 
-<ul class="flex gap-4 justify-between">
+<ul class="flex gap-4 center w-max-[60vw] flex-wrap">
 	<!-- Going through the selection_array array and displaying the correct icon for each coin. -->
 	{#each selection_array as coin}
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
@@ -40,7 +40,6 @@
 				</div>
 			</div>
 		</div>
-
 	{/each}
 </ul>
 

@@ -12,7 +12,7 @@ It also contains the code for the CRUD operations.
 All Endpoints are automatically generated.
 
 To add a throw scenario, you need to:
-    - update the throws list
+    - update the "throws" list (first line)
     
 To add more analyses, you need to:
     - update the analyse_throw function
@@ -32,7 +32,10 @@ Example:
 }
 
 The helper functions are found in the helper.py file.
+Change the throws list in the beginning of the file, if you want to change the number of throws.
 '''
+
+throws = [8, 10, 20, 30]  # Declare how many throws you want to create
 
 # Setup Database
 SQLALCHEMY_DATABASE_URL = "sqlite:///./throws.db"
@@ -50,8 +53,6 @@ def get_db():
     finally:
         db.close()
 
-
-throws = [8, 10, 20]  # Declare how many throws you want to create
 
 # Create a base class for your models
 Base = declarative_base()
@@ -99,6 +100,9 @@ def analyse_throw(df: pd.DataFrame) -> dict:
     # Calculate the mean heads and mean tails
     mean_heads = (count_heads / (count_heads + count_tails)) * 100
     mean_tails = (count_tails / (count_heads + count_tails)) * 100
+
+    # Look up if there are any repetitions in the dataframe
+    dataframe = consecutive_values(df)
 
     # Other analysis of the dataframe
     pass  # <---- Your Code goes here --->

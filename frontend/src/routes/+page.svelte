@@ -5,6 +5,8 @@
     import Analysis from "../components/Analysis.svelte";
     import {writable} from "svelte/store";
 
+    // Scenario options
+    let scenarioOptions = [8, 10, 20, 30]
     // SVG names
     let svgHero: string = '';
     let svgTask: string = '';
@@ -93,7 +95,7 @@
 
 <!-- ===============================[ Hero section ]========================================= -->
 {#key scenario}
-    <section class="pt-8 flex content-center justify-center" transition:blur>
+    <section class="pt-8 flex content-center justify-center">
     <div class="w-2/3 flex mobile:flex-col h-min-[80vh] mt-[10vh]">
         <div class="w-1/2 h-full flex items-center ">
             <div class="prose font-default">
@@ -119,7 +121,7 @@
 {/key}
 <!-- ===============================[ Explanation section ]====================================== -->
 
-<section class="flex items-center justify-center" transition:blur>
+<section class="flex items-center justify-center">
     <div class="w-3/4 flex h-[60vh] justify-center items-center gap-5">
         <div class="w-1/2">
             <div class="w-fit">
@@ -142,8 +144,8 @@
 
 <!-- ======================================[ Task section ]======================================== -->
 {#key scenario}
-    <section id="Münzwurf" class="pt-8 flex content-center justify-center mb-20" transition:fade>
-    <div class="w-3/4 flex h-[80vh] justify-center content-center gap-5">
+    <section id="Münzwurf" class="flex content-center justify-center mb-20" transition:fade>
+        <div class="w-3/4 flex h-[70vh] justify-center content-center gap-5">
         <!-- If no scenario has been selected -->
         {#if scenario === 0}
     
@@ -158,9 +160,11 @@
                     {/if}
                     <!-- TODO: Adjust the button to the same size as the other buttons -->
                     <div class="pt-3 my-6 w-fit flex flex-wrap gap-2 justify-center">
-                        <button class="btn-outer" on:click={() => {scenario = 8}} id="8">&nbsp 8-Mal werfen</button>
-                        <button class="btn-outer" on:click={() => {scenario = 10}} id="10">10-Mal werfen</button>
-                        <button class="btn-outer" on:click={() => {scenario = 20}} id="20">20-Mal werfen</button>
+                        {#each scenarioOptions as value}
+                            <button class="btn-outer" on:click={() => {scenario = value}} id="{value}">&nbsp {value}-Mal
+                                werfen
+                            </button>
+                        {/each}
                     </div>
                 </div>
             </div>
@@ -172,7 +176,7 @@
                 </div>
             </div>
             <!-- If scenario has been selected and User is selecting Heads or Tails -->
-        {:else if scenario >= 8 && counter !== scenario}
+        {:else if scenario != 0 && counter !== scenario}
             <div class="flex flex-col h-full justify-center gap-24" in:fade>
                 <!-- TODO: Create Head or Tails selection Card -->
                 <div class="flex flex-row gap-32 justify-center items-center">
