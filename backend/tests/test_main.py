@@ -26,7 +26,7 @@ def create_dataframe(num_throws: int) -> pd.DataFrame:
     num_rows = 100
     return pd.DataFrame(
         {"id" if k == 0 else k: [choice(coin) for _ in range(num_rows)]
-         for k in range(1, num_throws + 1)}
+         for k in range(0, num_throws + 1)}
     )
 
 
@@ -101,12 +101,33 @@ def test_get_throws(mock_db_session, test_cases):
         assert isinstance(response, dict)
         assert (response["mean_heads"] + response["mean_tails"] == 100).all()
 
+        assert isinstance(response["consecutive_heads_mean"], float)
+        assert isinstance(response["consecutive_tails_mean"], float)
+
+        assert isinstance(response["consecutive_heads_std"], float)
+        assert isinstance(response["consecutive_tails_std"], float)
+
+        assert isinstance(response["consecutive_heads_data"], dict)
+        assert isinstance(response["consecutive_tails_data"], dict)
+
+        assert list(response["consecutive_heads_data"].keys()) == list(range(1, num_throws + 1))
+        assert list(response["consecutive_tails_data"].keys()) == list(range(1, num_throws + 1))
+
         # Create a dataframe with only heads
         df_tails = df.copy()
         df_tails[df_tails == "heads"] = "tails"
         response = analyse_throw(df_tails)
         assert (response["mean_heads"] == 0).all()
         assert (response["mean_tails"] == 100).all()
+
+        assert response["consecutive_heads_mean"] == 0
+        assert response["consecutive_tails_mean"] == num_throws
+
+        assert response["consecutive_heads_std"] == 0
+        assert response["consecutive_tails_std"] == 0
+
+        assert (response["consecutive_heads_data"] ==
+                {number: 0 for number in range(1, num_throws + 1)})
 
         # Create a dataframe with only tails
         df_heads = df_tails.copy()
@@ -115,8 +136,14 @@ def test_get_throws(mock_db_session, test_cases):
         assert (response["mean_heads"] == 100).all()
         assert (response["mean_tails"] == 0).all()
 
+        assert response["consecutive_heads_mean"] == num_throws
+        assert response["consecutive_tails_mean"] == 0
+
         # concatenate df_tails with df_heads. The output should be 50% heads and 50% tails
         df_concat = pd.concat([df_tails, df_heads])
         response = analyse_throw(df_concat)
         assert (response["mean_heads"] == 50).all()
         assert (response["mean_tails"] == 50).all()
+
+        assert response["consecutive_heads_mean"] == num_throws / 2
+        assert response["consecutive_tails_mean"] == num_throws / 2
