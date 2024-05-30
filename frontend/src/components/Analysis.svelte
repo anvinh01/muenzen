@@ -9,7 +9,7 @@
     let analysis_data: { mean_tails: Record<string, number>, mean_heads: Record<string, number> };
 
     function fetchData() {
-        fetch(`http://127.0.0.1:8000/throws/${analysis}`, {
+        fetch(`/throws/${analysis}`, {
             method: 'GET',
         })
             .then(response => response.json())

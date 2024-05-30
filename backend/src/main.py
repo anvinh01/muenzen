@@ -66,11 +66,7 @@ Base.metadata.create_all(bind=engine)
 # Create a FastAPI instance
 app = FastAPI()
 
-origins = [
-    "http://localhost:5173",  # Allow this origin
-    "http://localhost:5176",  # Also allow this origin
-    "http://localhost:5178",  # Also allow this origin
-]
+origins = []
 
 # Add CORS middleware
 app.add_middleware(

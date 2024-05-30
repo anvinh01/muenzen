@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
+      - 80:80
     volumes:
       - ./nginx/dev.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/cache:/var/cache/nginx/proxy_temp
@@ -17,12 +15,8 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    ports:
-      - "5173:5173"
 
   backend:
     build: ./backend
     volumes:
       - ./backend:/app
-    ports:
-      - "80:80"
