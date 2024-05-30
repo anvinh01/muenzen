@@ -1,14 +1,14 @@
 from unittest.mock import MagicMock
-
 import pandas as pd
+import pytest
 from fastapi.testclient import TestClient
-
 from backend.src.main import app, analyse_throw
 from backend.src.helper import (CoinToss)
 from random import choice
 
 client = TestClient(app)
 
+test_cases = [8, 10, 20]
 THROW_URL = "/throws"
 coin = [CoinToss.heads.value, CoinToss.tails.value]
 
@@ -42,108 +42,164 @@ def post_throws(mock_db_session: MagicMock, num_throws=8):
     return response.json()
 
 
-def test_create_throws(mock_db_session, test_cases):
-    for num_throws in test_cases:
-        post_throws(mock_db_session, num_throws)
+@pytest.mark.parametrize("num_throws", test_cases)
+def test_create_throws(mock_db_session, num_throws):
+    request_data = throws(num_throws)
+    response = client.post(f"{THROW_URL}/{num_throws}", json=request_data)
+    assert response.status_code == 200
+    assert response.json() == request_data
+
+    mock_db_session.add.assert_called()
+    mock_db_session.commit.assert_called()
 
 
-def test_create_throws_too_many_keys(mock_db_session, test_cases):
-    for num_throws in test_cases:
-        request_data = throws(num_throws)
-        request_data["scenario"] = 3  # adding invalid key with invalid value, should be ignored
-        response = client.post(f"{THROW_URL}/{num_throws}", json=request_data)
+@pytest.mark.parametrize("num_throws", test_cases)
+def test_create_throws_too_many_keys(mock_db_session, num_throws):
+    request_data = throws(num_throws)
+    request_data["scenario"] = 3  # adding invalid key with invalid value, should be ignored
+    response = client.post(f"{THROW_URL}/{num_throws}", json=request_data)
 
-        assert response.status_code == 200
-        assert response.json() != request_data
-        assert response.json() == {k: value for k, value in request_data.items() if k != "scenario"}
+    assert response.status_code == 200
+    assert response.json() != request_data
+    assert response.json() == {k: value for k, value in request_data.items() if k != "scenario"}
 
-        mock_db_session.add.assert_called()
-        mock_db_session.commit.assert_called()
-
-
-def test_create_throws_missing_throw(mock_db_session, test_cases):
-    for num_throws in test_cases:
-        # Creating a request_data with invalid throw order
-        # The throw order will skip the number 8 and instead be number 9
-        # The Test should ignore the number 9, but should notice that the 8 is missing
-        request_data = throws(num_throws)
-        request_data["throw_9"] = request_data["throw_8"]
-        del request_data["throw_8"]
-        response = client.post(f"{THROW_URL}/{num_throws}", json=request_data)
-        assert response.status_code == 422
-        assert response.json() == dict(
-            detail=[{'input': request_data, 'loc': ['body', 'throw_8'], 'msg': 'Field required', 'type': 'missing'}])
-
-        mock_db_session.add.assert_not_called()
-        mock_db_session.commit.assert_not_called()
+    mock_db_session.add.assert_called()
+    mock_db_session.commit.assert_called()
 
 
-def test_creat_throws_invalid_value(mock_db_session, test_cases):
-    for num_throws in test_cases:
-        # Creating request_data with invalid spelling of heads
-        request_data = throws(num_throws)
-        request_data["throw_1"] = "head"  # Invalid spelling of heads
-        response = client.post(f"{THROW_URL}/{num_throws}", json=request_data)
-        assert response.status_code == 422
-        assert response.json() == dict(detail=[{'ctx': {'error': {}}, 'input': 'head', 'loc': ['body', 'throw_1'],
-                                                'msg': 'Value error, Unexpected value head, allowed values are '
-                                                       "['heads', 'tails']", 'type': 'value_error'}])
-        mock_db_session.add.assert_not_called()
-        mock_db_session.commit.assert_not_called()
+@pytest.mark.parametrize("num_throws", test_cases)
+def test_create_throws_missing_throw(mock_db_session, num_throws):
+    # Creating a request_data with invalid throw order
+    # The throw order will skip the number 8 and instead be number 9
+    # The Test should ignore the number 9, but should notice that the 8 is missing
+    request_data = throws(num_throws)
+    request_data["throw_9"] = request_data["throw_8"]
+    del request_data["throw_8"]
+    response = client.post(f"{THROW_URL}/{num_throws}", json=request_data)
+    assert response.status_code == 422
+    assert response.json() == dict(
+        detail=[{'input': request_data, 'loc': ['body', 'throw_8'], 'msg': 'Field required', 'type': 'missing'}])
+
+    mock_db_session.add.assert_not_called()
+    mock_db_session.commit.assert_not_called()
 
 
-def test_get_throws(mock_db_session, test_cases):
-    for num_throws in test_cases:
-        print("num_throws", num_throws)
-        test_data = create_dataframe(num_throws)
-        df = pd.DataFrame(test_data)
-        response = analyse_throw(df)
-        assert isinstance(response, dict)
-        assert (response["mean_heads"] + response["mean_tails"] == 100).all()
+@pytest.mark.parametrize("num_throws", test_cases)
+def test_creat_throws_invalid_value(mock_db_session, num_throws):
+    # Creating request_data with invalid spelling of heads
+    request_data = throws(num_throws)
+    request_data["throw_1"] = "head"  # Invalid spelling of heads
+    response = client.post(f"{THROW_URL}/{num_throws}", json=request_data)
+    assert response.status_code == 422
+    assert response.json() == dict(detail=[{'ctx': {'error': {}}, 'input': 'head', 'loc': ['body', 'throw_1'],
+                                            'msg': 'Value error, Unexpected value head, allowed values are '
+                                                   "['heads', 'tails']", 'type': 'value_error'}])
+    mock_db_session.add.assert_not_called()
+    mock_db_session.commit.assert_not_called()
 
-        assert isinstance(response["consecutive_heads_mean"], float)
-        assert isinstance(response["consecutive_tails_mean"], float)
 
-        assert isinstance(response["consecutive_heads_std"], float)
-        assert isinstance(response["consecutive_tails_std"], float)
+@pytest.mark.parametrize("num_throws", test_cases)
+def test_get_throws(mock_db_session, num_throws):
+    test_data = create_dataframe(num_throws)
+    df = pd.DataFrame(test_data)
+    response = analyse_throw(df)
+    assert isinstance(response, dict)
 
-        assert isinstance(response["consecutive_heads_data"], dict)
-        assert isinstance(response["consecutive_tails_data"], dict)
+    # Check the Count functionality
+    assert isinstance(response["count"]["heads"], dict)
+    assert isinstance(response["count"]["tails"], dict)
+    assert response["count"]["heads"].keys() == response["count"]["tails"].keys()
+    for key, value in response["count"]["heads"].items():
+        assert value + response["count"]["tails"][key] == response["total"]
 
-        assert list(response["consecutive_heads_data"].keys()) == list(range(1, num_throws + 1))
-        assert list(response["consecutive_tails_data"].keys()) == list(range(1, num_throws + 1))
+    # Check the consecutive functionality
+    assert isinstance(response["consecutive"]["mean"]["heads"], float)
+    assert isinstance(response["consecutive"]["mean"]["tails"], float)
+    assert isinstance(response["consecutive"]["std"]["heads"], float)
+    assert isinstance(response["consecutive"]["std"]["tails"], float)
+    assert isinstance(response["consecutive"]["percentages"]["heads"], dict)
+    assert isinstance(response["consecutive"]["percentages"]["tails"], dict)
+    assert isinstance(response["consecutive"]["data"]["heads"], dict)
+    assert isinstance(response["consecutive"]["data"]["tails"], dict)
 
-        # Create a dataframe with only heads
-        df_tails = df.copy()
-        df_tails[df_tails == "heads"] = "tails"
-        response = analyse_throw(df_tails)
-        assert (response["mean_heads"] == 0).all()
-        assert (response["mean_tails"] == 100).all()
 
-        assert response["consecutive_heads_mean"] == 0
-        assert response["consecutive_tails_mean"] == num_throws
+@pytest.mark.parametrize("num_throws", test_cases)
+def test_get_throws_only_tails(mock_db_session, num_throws):
+    # Create a dataframe with only heads
+    test_data = create_dataframe(num_throws)
+    df_tails = pd.DataFrame(test_data)
+    df_tails[df_tails == "heads"] = "tails"
+    response = analyse_throw(df_tails)
 
-        assert response["consecutive_heads_std"] == 0
-        assert response["consecutive_tails_std"] == 0
+    # check the Count functionality
+    for key, value in response["count"]["tails"].items():
+        assert value == response["total"]
 
-        assert (response["consecutive_heads_data"] ==
-                {number: 0 for number in range(1, num_throws + 1)})
+    # Check the consecutive functionality
+    assert response["consecutive"]["mean"]["tails"] == num_throws
+    assert response["consecutive"]["mean"]["heads"] == 0
 
-        # Create a dataframe with only tails
-        df_heads = df_tails.copy()
-        df_heads[df_heads == "tails"] = "heads"
-        response = analyse_throw(df_heads)
-        assert (response["mean_heads"] == 100).all()
-        assert (response["mean_tails"] == 0).all()
+    # Since all the throws are tails, the standard deviation should be 0
+    assert response["consecutive"]["std"]["tails"] == 0
+    assert response["consecutive"]["std"]["heads"] == 0
 
-        assert response["consecutive_heads_mean"] == num_throws
-        assert response["consecutive_tails_mean"] == 0
+    # Since all the throws are tails, the max consecutive tails throw should be 100%
+    assert response["consecutive"]["percentages"]["tails"][num_throws] == 100
+    assert response["consecutive"]["data"]["tails"][num_throws] == 100
 
-        # concatenate df_tails with df_heads. The output should be 50% heads and 50% tails
-        df_concat = pd.concat([df_tails, df_heads])
-        response = analyse_throw(df_concat)
-        assert (response["mean_heads"] == 50).all()
-        assert (response["mean_tails"] == 50).all()
 
-        assert response["consecutive_heads_mean"] == num_throws / 2
-        assert response["consecutive_tails_mean"] == num_throws / 2
+@pytest.mark.parametrize("num_throws", test_cases)
+def test_get_throws_only_heads(mock_db_session, num_throws):
+    # Create a dataframe with only heads
+    test_data = create_dataframe(num_throws)
+    df_heads = pd.DataFrame(test_data)
+    df_heads[df_heads == "tails"] = "heads"
+    response = analyse_throw(df_heads)
+
+    # Check the Count functionality
+    for key, value in response["count"]["heads"].items():
+        assert value == response["total"]
+
+    # Check the consecutive functionality
+    assert response["consecutive"]["mean"]["tails"] == 0
+    assert response["consecutive"]["mean"]["heads"] == num_throws
+
+    assert response["consecutive"]["std"]["tails"] == 0
+    assert response["consecutive"]["std"]["heads"] == 0
+
+    assert response["consecutive"]["percentages"]["heads"][num_throws] == 100
+    assert response["consecutive"]["data"]["heads"][num_throws] == 100
+
+
+@pytest.mark.parametrize("num_throws", test_cases)
+def test_get_throws_only_tails(mock_db_session, num_throws):
+    # Create a dataframe with only heads
+    test_data = create_dataframe(num_throws)
+
+    df_heads = pd.DataFrame(test_data)
+    df_heads[df_heads == "tails"] = "heads"
+
+    df_tails = df_heads.copy()
+    df_tails[df_tails == "heads"] = "tails"
+
+    # concatenate df_tails with df_heads. The output should be 50% heads and 50% tails
+    df_concat = pd.concat([df_tails, df_heads])
+    response = analyse_throw(df_concat)
+
+    # Check the Count functionality
+    for key, value in response["count"]["tails"].items():
+        assert value == response["total"] / 2
+
+    # Check the consecutive functionality
+    assert response["consecutive"]["mean"]["tails"] == num_throws / 2
+    assert response["consecutive"]["mean"]["heads"] == num_throws / 2
+
+    assert round(response["consecutive"]["std"]["tails"]) == num_throws / 2
+    assert round(response["consecutive"]["std"]["heads"]) == num_throws / 2
+
+    # Since we have 50% heads and 50% tails, the max consecutive tails should be 100% for each.
+    assert response["consecutive"]["percentages"]["tails"][num_throws] == 50
+    assert response["consecutive"]["data"]["tails"][num_throws] == 100
+
+    assert response["consecutive"]["percentages"]["heads"][num_throws] == 50
+    assert response["consecutive"]["data"]["heads"][num_throws] == 100
