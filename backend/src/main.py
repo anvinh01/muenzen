@@ -1,4 +1,5 @@
 from typing import Type, Coroutine, Any, Callable
+import os
 
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import sessionmaker
@@ -38,10 +39,15 @@ Change the throws list in the beginning of the file, if you want to change the n
 throws = [8, 10, 20, 30]  # Declare how many throws you want to create
 
 # Setup Database
-SQLALCHEMY_DATABASE_URL = "sqlite:///./throws.db"
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+user = os.environ['DB_USER']
+password = os.environ['DB_PASSWORD']
+db_name = os.environ['DB_NAME']
+
+SQLALCHEMY_DATABASE_URL = f"postgresql://{user}:{password}@db:5432/{db_name}"
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
+print(engine.url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 

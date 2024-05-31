@@ -69,7 +69,7 @@
         let data = selection;
         console.log(data);
         // Send POST Request to Backend
-			fetch(`/throws/${scenario}/`, {
+        fetch(`/throws/${scenario}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -15,6 +15,7 @@ def create_dataframe(num_throws: int) -> pd.DataFrame:
          for k in range(1, num_throws + 1)}
     )
 
+
 def len_iter(items):
     return sum(1 for _ in items)
 

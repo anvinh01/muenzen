@@ -6,7 +6,11 @@
     let mean_heads: Record<string, number>;
     export let analysis: number = 8;
 
-    let analysis_data: { mean_tails: Record<string, number>, mean_heads: Record<string, number> };
+    let analysis_data: {
+        total: number;
+        count: Record<string, Record<string, number>>;
+        mean_tails: Record<string, number>, mean_heads: Record<string, number>
+    };
 
     function fetchData() {
         fetch(`/throws/${analysis}`, {
@@ -15,10 +19,12 @@
             .then(response => response.json())
             .then(data => {
                 analysis_data = data;
+                console.log(analysis_data);
                 if (analysis_data) {
-                    mean_tails = analysis_data.mean_tails;
-                    mean_heads = analysis_data.mean_heads;
+                    mean_tails = analysis_data.count.tails;
+                    mean_heads = analysis_data.count.heads;
                 }
+                console.log(mean_tails);
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -31,7 +37,7 @@
 </script>
 
 
-{#if analysis_data}
+{#if analysis_data && mean_tails && mean_heads}
     <section class="mb-20 flex items-center justify-center">
         <div class="w-3/4 flex h-[60vh] justify-center items-center gap-5">
             <div class="w-1/2 h-full gap-5 flex flex-col justify-around items-center">
@@ -45,12 +51,12 @@
                 {#each Object.keys(mean_heads) as key, index}
                     <div class="w-full flex h-full">
                         <div class="w-fit px-3 flex justify-center items-center"><h1>{index + 1}: </h1></div>
-                        <div style="width: {mean_heads[key].toFixed(2)}%;"
+                        <div style="width: {(mean_heads[key] / analysis_data.total * 100).toFixed(2)}%;"
                              class="bg-secondary h-full overflow-hidden flex justify-center items-center"><p
-                                class="px-5 text-center content-center">{mean_heads[key].toFixed(2)} %</p></div>
-                        <div style="width: {100 - mean_heads[key].toFixed(2)}%;"
+                                class="px-5 text-center content-center">{mean_heads[key]} Kopf</p></div>
+                        <div style="width: {(100 - (mean_heads[key] / analysis_data.total * 100)).toFixed(2)}%;"
                              class="bg-primary h-full overflow-hidden flex justify-center items-center"><p
-                                class="px-5 text-center content-center">{mean_tails[key].toFixed(2)} %</p></div>
+                                class="px-5 text-center content-center">{mean_tails[key]} Zahl</p></div>
                     </div>
                 {/each}
             </div>
