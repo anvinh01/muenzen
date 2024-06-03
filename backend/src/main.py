@@ -39,11 +39,13 @@ Change the throws list in the beginning of the file, if you want to change the n
 throws = [8, 10, 20, 30]  # Declare how many throws you want to create
 
 # Setup Database
-user = os.environ['DB_USER']
-password = os.environ['DB_PASSWORD']
-db_name = os.environ['DB_NAME']
+user = os.environ['POSTGRES_USER']
+password = os.environ['POSTGRES_PASSWORD']
+host = os.environ['DB_HOST']
+db_name = os.environ['POSTGRES_DB']
+port = os.environ['DB_PORT']
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://{user}:{password}@db:5432/{db_name}"
+SQLALCHEMY_DATABASE_URL = f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
@@ -59,6 +61,8 @@ def get_db():
     finally:
         db.close()
 
+
+throws = [8, 10, 20]  # Declare how many throws you want to create
 
 # Create a base class for your models
 Base = declarative_base()

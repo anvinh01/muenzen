@@ -20,6 +20,9 @@ services:
     build: ./backend
     volumes:
       - ./backend:/app
+    depends_on:
+      - db
+
 
   db:
     image: postgres:latest
@@ -27,6 +30,8 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: coin_db
+      DB_HOST: localhost
+      DB_PORT: 63235
     ports:
       - "63235:5432"
 
