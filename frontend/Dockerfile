@@ -1,4 +1,4 @@
-^FROM node:slim AS base
+FROM node:slim AS base
 
 # Install pnpm
 RUN npm install -g pnpm

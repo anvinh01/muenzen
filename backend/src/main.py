@@ -1,9 +1,11 @@
 from typing import Type, Coroutine, Any, Callable
 import os
-
+import psycopg2
+from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
 import pandas as pd
 from .helper import *
 from fastapi.middleware.cors import CORSMiddleware
@@ -38,17 +40,25 @@ Change the throws list in the beginning of the file, if you want to change the n
 
 throws = [8, 10, 20, 30]  # Declare how many throws you want to create
 
-# Setup Database
-user = os.environ['POSTGRES_USER']
-password = os.environ['POSTGRES_PASSWORD']
-host = os.environ['DB_HOST']
-db_name = os.environ['POSTGRES_DB']
-port = os.environ['DB_PORT']
+host = os.getenv("DB_HOST", "localhost")
+port = os.getenv("DB_PORT", 5432)
+database = os.getenv("POSTGRES_DB", "coin_db")
+user = os.getenv("POSTGRES_USER", "user")
+password = os.getenv("POSTGRES_PASSWORD", "pass")
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+def connect():
+    conn = psycopg2.connect(host=host,
+                            port=port,
+                            database=database,
+                            user=user,
+                            password=password,
+                            sslmode='disable')
+    print(conn)
+    return conn
 
+
+engine = create_engine('postgresql+psycopg2://', creator=connect)
 print(engine.url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
