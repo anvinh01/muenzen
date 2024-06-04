@@ -61,9 +61,12 @@ Unsere Website soll folgende Anforderungen vom Kunden mindestens erfüllen:
 <h2 id="docker">Docker</h2>
 Wir haben eine Docker-compose erstellt, welches eine das Frontend und Backend mit Nginx aufsetzt.
 Es ist möglich eine Entwicklungsumgebung aufzusetzen, indem Sie in der Commandline diesen Befehl eingeben:
-```Commandline
+
+```
 docker-compose -f docker-compose.yml -p muenzen up -d
 ```
+
+
 
 
 

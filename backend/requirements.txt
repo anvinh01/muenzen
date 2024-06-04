@@ -13,3 +13,4 @@ pandas~=2.2.2
 psycopg2-binary==2.9.9
 sqlalchemy_utils==0.41.2
 sqlalchemy-redshift>=0.7.9
+numpy>=1.26.0

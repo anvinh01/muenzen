@@ -3,6 +3,8 @@ from itertools import groupby
 import pandas as pd
 from pydantic import BaseModel, create_model, Field, field_validator
 from sqlalchemy import Column, Integer, Enum
+from pydantic import BaseModel, Field
+from typing import Dict, Any
 
 # !!!!!!! Don't remove Session from sqlalchemy.orm. It is used by fastapi, even if Pycharm doesn't recognize it
 # noinspection PyUnresolvedReferences
@@ -11,6 +13,29 @@ from sqlalchemy.orm import Session, declarative_base
 '''
 These are helper functions, which are used to create the models and the API-Endpoints.
 '''
+
+
+class ConsecutiveData(BaseModel):
+    heads: Dict[int, int]
+    tails: Dict[int, int]
+
+
+class ConsecutiveStats(BaseModel):
+    mean: Dict[str, float]
+    std: Dict[str, float]
+    percentages: Dict[str, Dict[int, float]]
+    data: ConsecutiveData
+
+
+class CountData(BaseModel):
+    heads: Dict[str, int]
+    tails: Dict[str, int]
+
+
+class AnalysisResponse(BaseModel):
+    total: int
+    count: CountData
+    consecutive: ConsecutiveStats
 
 
 # Create an enum for the CoinToss, since the CoinToss can only be heads or tails.

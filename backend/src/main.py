@@ -1,14 +1,11 @@
-from typing import Type, Coroutine, Any, Callable
+from typing import Type, Coroutine, Callable
 import os
-import psycopg2
-from dotenv import load_dotenv
+import numpy as np
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from sqlalchemy_utils import database_exists, create_database
-import pandas as pd
 from .helper import *
-from fastapi.middleware.cors import CORSMiddleware
+
 '''
 This file contains the code for the FastAPI server.
 It also contains the code for the CRUD operations.
@@ -40,6 +37,7 @@ Change the throws list in the beginning of the file, if you want to change the n
 
 throws = [8, 10, 20, 30]  # Declare how many throws you want to create
 
+# Get environment variables from.env file
 host = os.getenv("DB_HOST", "localhost")
 port = os.getenv("DB_PORT", 5432)
 database = os.getenv("POSTGRES_DB", "coin_db")
@@ -47,21 +45,8 @@ user = os.getenv("POSTGRES_USER", "user")
 password = os.getenv("POSTGRES_PASSWORD", "pass")
 
 
-def connect():
-
-    conn = psycopg2.connect(host=host,
-                            port=port,
-                            database=database,
-                            user=user,
-                            password=password,
-                            sslmode='disable')
-    print(conn)
-    return conn
-
-
 # engine = create_engine('postgresql+psycopg2://', creator=connect)
 engine = create_engine(f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}')
-print(engine.url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -73,8 +58,6 @@ def get_db():
     finally:
         db.close()
 
-
-throws = [8, 10, 20]  # Declare how many throws you want to create
 
 # Create a base class for your models
 Base = declarative_base()
@@ -90,15 +73,6 @@ app = FastAPI()
 
 origins = []
 
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,  # Allow origins
-    allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
-)
-
 # Create the Schema for 8, 10 and 20 throws
 throws_schema = {k: create_throw_class_crud(k) for k in throws}
 
@@ -109,7 +83,7 @@ throws_schema = {k: create_throw_class_crud(k) for k in throws}
 def analyse_throw(df: pd.DataFrame) -> dict:
     # This is the function, which is called when a GET request is made to /throws/<scenario>
     # Analyse the dataframe and return the analysis of the dataframe as a dictionary
-    df = df.set_index('id')  # Set the index of the dataframe to id
+    # df = df.set_index('id')  # Set the index of the dataframe to id
 
     # Create an empty dictionary and fill it with the analysis of the dataframe
     response = dict(total=df.shape[0])
@@ -148,8 +122,27 @@ def get_throw(db: Session, scenario: int):
     # Return the dataframe of the throws with the given scenario
     if scenario not in throws_models.keys():
         raise ValueError('Num of throws can only be 8 or 10')
-    connection = engine.raw_connection()
-    return pd.read_sql(f"SELECT * FROM toss_{scenario}", connection)
+    # Read the data from the database and return it as a dataframe
+    with engine.connect() as conn:
+        df = pd.read_sql(
+            sql=f"SELECT * FROM toss_{scenario}",
+            con=conn.connection
+        )
+        # If dataframe is empty, return an empty dataframe
+        if df.empty:
+            print(f"database info: {db.info}")
+            # When the database is empty, because the dataframe can't calculate
+            raise ValueError('No throws found: Database is empty')
+        elif df.shape[0] < 2:
+            raise ValueError('Not Enough data: Database needs at least 2 throws')
+        else:
+            df = df.replace([np.inf, -np.inf], np.nan)
+            df = df.dropna()
+
+        # Check if 'id' column exists before dropping it
+        if 'id' in df.columns:
+            df = df.drop(columns=['id'])  # Drop the id column
+        return df
 
 
 # =================================[ Creating API-Endpoints ]==================================
@@ -179,6 +172,7 @@ def generate_get_endpoint(scenario: int) -> Callable[[Session], Coroutine[Any, A
 for num_throws, model in throws_schema.items():
     # create a POST endpoint for each scenario
     app.add_api_route(
+        # Test
         path=f"/throws/{num_throws}",
         endpoint=generate_post_endpoint(num_throws, model),
         response_model=model,
@@ -189,5 +183,6 @@ for num_throws, model in throws_schema.items():
     app.add_api_route(
         path=f"/throws/{num_throws}",
         endpoint=generate_get_endpoint(num_throws),
+        response_model=AnalysisResponse,
         methods=["GET"]
     )
