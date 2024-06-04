@@ -48,6 +48,7 @@ password = os.getenv("POSTGRES_PASSWORD", "pass")
 
 
 def connect():
+
     conn = psycopg2.connect(host=host,
                             port=port,
                             database=database,
@@ -58,7 +59,8 @@ def connect():
     return conn
 
 
-engine = create_engine('postgresql+psycopg2://', creator=connect)
+# engine = create_engine('postgresql+psycopg2://', creator=connect)
+engine = create_engine(f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}')
 print(engine.url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
@@ -146,7 +148,8 @@ def get_throw(db: Session, scenario: int):
     # Return the dataframe of the throws with the given scenario
     if scenario not in throws_models.keys():
         raise ValueError('Num of throws can only be 8 or 10')
-    return pd.read_sql(f"SELECT * FROM toss_{scenario}", db.bind)
+    connection = engine.raw_connection()
+    return pd.read_sql(f"SELECT * FROM toss_{scenario}", connection)
 
 
 # =================================[ Creating API-Endpoints ]==================================
