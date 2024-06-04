@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import SelectionList from '../components/+SelectionList.svelte'; // Adjusted import
+    import SelectionList from '../components/SelectionList.svelte'; // Adjusted import
     import { fade } from'svelte/transition';
     import Analysis from "../components/Analysis.svelte";
     import {writable} from "svelte/store";
@@ -69,7 +69,7 @@
         let data = selection;
         console.log(data);
         // Send POST Request to Backend
-			fetch(`http://127.0.0.1:8000/throws/${scenario}/`, {
+        fetch(`/throws/${scenario}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

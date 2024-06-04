@@ -1,6 +1,7 @@
 import unittest.mock
 import pytest
 from backend.src.main import app, get_db
+from dataclasses import dataclass
 
 mock_session = unittest.mock.MagicMock()
 
@@ -21,6 +22,3 @@ def mock_db_session():
     return mock_session
 
 
-@pytest.fixture()
-def test_cases():
-    return [8, 10, 20]

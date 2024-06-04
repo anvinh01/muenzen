@@ -92,6 +92,28 @@ def create_throw_class_crud(n: int):
 
 
 # ===================================[ Dataframes functions ]==================================
+
+def count(df: pd.DataFrame) -> dict:
+    """
+
+    :param df: pd.DataFrame
+    :return: dict
+    preview:
+    {
+        heads : {throw_0: int, throw_1: int,...},
+        tails : {throw_0: int, throw_1: int,...},
+    }
+
+    This Function counts the number of heads and tails in the dataframe.
+    """
+
+    # Count the number of heads and tails in the dataframe
+    count_heads = df.apply(lambda x: (x == 'heads').sum())
+    count_tails = df.apply(lambda x: (x == 'tails').sum())
+
+    return dict(heads=count_heads.to_dict(), tails=count_tails.to_dict())
+
+
 def len_iter(items):
     return sum(1 for _ in items)
 
@@ -100,28 +122,95 @@ def consecutive_helper(data, bin_val):
     return max((len_iter(run) for val, run in groupby(data) if val == bin_val), default=0)
 
 
-def consecutive_values(df: pd.DataFrame) -> tuple[list, list]:
+def consecutive_values(df: pd.DataFrame) -> dict:
+    """
 
+    :param: df: pd.DataFrame
+    :return: dict
+    preview:
+    {
+        mean : {
+            heads=consecutive_heads_mean,
+            tails=consecutive_tails_mean,
+        },
+        std : {
+            heads=consecutive_heads_std,
+            tails=consecutive_tails_std,
+        },
+        percentages : {
+            heads : {0: percentage, 1: percentage,...},
+            tails : {0: percentage, 1: percentage,...},
+        },
+        data : {
+            heads : {0: int, 1: int,...},
+            tails : {0: int, 1: int,...},
+        }
+    }
+
+    This function calculates the mean and the standard deviation of the consecutive heads and tails for each throw.
+    First we get the max consecutive heads and tails for each throw round.
+    Then we calculate the mean and stadard deviation of the consecutive heads and tails.
+
+    We also count the number of max consecutive heads and tails and return it once in percentages and int.
+    """
+
+    # Calculate the number of max consecutive heads and tails for each throw
     consecutive_heads = df.apply(consecutive_helper, bin_val="heads", axis=1)
     consecutive_tails = df.apply(consecutive_helper, bin_val="tails", axis=1)
 
+    # Calculate the mean of the consecutive heads and tails
     consecutive_tails_mean = consecutive_tails.mean()
     consecutive_heads_mean = consecutive_heads.mean()
 
+    # Calculate the standard deviation of the consecutive heads and tails
     consecutive_heads_std = consecutive_heads.std()
     consecutive_tails_std = consecutive_tails.std()
 
-    consecutive_heads_number = (consecutive_heads.value_counts() * 100 // consecutive_heads.count()).to_dict()
-    consecutive_heads_number = {number: consecutive_heads_number[number] if number in consecutive_heads_number else 0
-                                for number in
-                                range(1, len(df.keys()) + 1)}
+    # Count the number of max consecutive heads in percentages
+    consecutive_heads_percentages = (round(consecutive_heads.value_counts() * 100 / consecutive_heads.count(), 2)
+                                     .to_dict())
+    consecutive_heads_data_percentage = {
+        number: consecutive_heads_percentages[number] if number in consecutive_heads_percentages else 0
+        for number in range(0, len(df.keys()) + 1)
+    }
 
-    print(f"{consecutive_heads.count()}: consecutive: heads", consecutive_heads_number)
+    # Count the number of max consecutive heads
+    consecutive_heads_count = consecutive_heads.value_counts().to_dict()
+    consecutive_heads_data = {
+        number: consecutive_heads_count[number] if number in consecutive_heads_count else 0
+        for number in range(0, len(df.keys()) + 1)
+    }
 
-    '''
-    print("consecutive: heads", consecutive_heads_mean)
-    print("consecutive: heads std", consecutive_heads_std)
-    print("consecutive: heads number", consecutive_heads_number)
-    '''
+    # Count the number of max consecutive tails in percentages
+    consecutive_tails_percentages = (round(consecutive_tails.value_counts() * 100 / consecutive_tails.count(), 2)
+                                     .to_dict())
+    consecutive_tails_data_percentage = {
+        number: consecutive_tails_percentages[number] if number in consecutive_tails_percentages else 0
+        for number in range(0, len(df.keys()) + 1)
+    }
 
-    return consecutive_heads, consecutive_tails
+    # Count the number of max consecutive tails
+    consecutive_tails_count = consecutive_tails.value_counts().to_dict()
+    consecutive_tails_data = {
+        number: consecutive_tails_count[number] if number in consecutive_tails_count else 0
+        for number in range(0, len(df.keys()) + 1)
+    }
+
+    return dict(
+        mean=dict(
+            heads=consecutive_heads_mean,
+            tails=consecutive_tails_mean,
+        ),
+        std=dict(
+            heads=consecutive_heads_std,
+            tails=consecutive_tails_std,
+        ),
+        percentages=dict(
+            heads=consecutive_heads_data_percentage,
+            tails=consecutive_tails_data_percentage,
+        ),
+        data=dict(
+            heads=consecutive_heads_data,
+            tails=consecutive_tails_data,
+        )
+    )

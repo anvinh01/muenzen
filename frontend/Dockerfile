@@ -1,8 +1,12 @@
-FROM node:21-alpine
+FROM node:slim AS base
+
+# Install pnpm
+RUN npm install -g pnpm
 
 
 WORKDIR /app
 COPY package.json ./
-RUN npm install
+RUN pnpm install
 
-CMD ["npm", "run", "dev", "--host"]
+# dev server
+CMD pnpm install && pnpm run dev --host

@@ -1,8 +1,11 @@
 from typing import Type, Coroutine, Any, Callable
-
+import os
+import psycopg2
+from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
 import pandas as pd
 from .helper import *
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,11 +40,28 @@ Change the throws list in the beginning of the file, if you want to change the n
 
 throws = [8, 10, 20, 30]  # Declare how many throws you want to create
 
-# Setup Database
-SQLALCHEMY_DATABASE_URL = "sqlite:///./throws.db"
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+host = os.getenv("DB_HOST", "localhost")
+port = os.getenv("DB_PORT", 5432)
+database = os.getenv("POSTGRES_DB", "coin_db")
+user = os.getenv("POSTGRES_USER", "user")
+password = os.getenv("POSTGRES_PASSWORD", "pass")
+
+
+def connect():
+
+    conn = psycopg2.connect(host=host,
+                            port=port,
+                            database=database,
+                            user=user,
+                            password=password,
+                            sslmode='disable')
+    print(conn)
+    return conn
+
+
+# engine = create_engine('postgresql+psycopg2://', creator=connect)
+engine = create_engine(f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}')
+print(engine.url)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -53,6 +73,8 @@ def get_db():
     finally:
         db.close()
 
+
+throws = [8, 10, 20]  # Declare how many throws you want to create
 
 # Create a base class for your models
 Base = declarative_base()
@@ -66,11 +88,7 @@ Base.metadata.create_all(bind=engine)
 # Create a FastAPI instance
 app = FastAPI()
 
-origins = [
-    "http://localhost:5173",  # Allow this origin
-    "http://localhost:5176",  # Also allow this origin
-    "http://localhost:5178",  # Also allow this origin
-]
+origins = []
 
 # Add CORS middleware
 app.add_middleware(
@@ -91,29 +109,20 @@ throws_schema = {k: create_throw_class_crud(k) for k in throws}
 def analyse_throw(df: pd.DataFrame) -> dict:
     # This is the function, which is called when a GET request is made to /throws/<scenario>
     # Analyse the dataframe and return the analysis of the dataframe as a dictionary
-    # df = df.set_index('id')  # Set the index of the dataframe to id
+    df = df.set_index('id')  # Set the index of the dataframe to id
 
-    # Count the number of heads and tails in the dataframe
-    count_heads = df.apply(lambda x: (x == 'heads').sum())
-    count_tails = df.apply(lambda x: (x == 'tails').sum())
+    # Create an empty dictionary and fill it with the analysis of the dataframe
+    response = dict(total=df.shape[0])
 
-    # Calculate the mean heads and mean tails
-    mean_heads = (count_heads / (count_heads + count_tails)) * 100
-    mean_tails = (count_tails / (count_heads + count_tails)) * 100
+    # count the mean of heads and tails
+    response["count"] = count(df)
 
-    # Look up if there are any repetitions in the dataframe
-    consecutive_heads, consecutive_tails = consecutive_values(df)
+    # Look up if there are any consecutive in the dataframe
+    response["consecutive"] = consecutive_values(df)
 
     # Other analysis of the dataframe
     pass  # <---- Your Code goes here --->
 
-    # Return a dictionary with the mean heads and mean tails as keys and the values
-    response = dict(
-        mean_heads=mean_heads,
-        mean_tails=mean_tails,
-        consecutive_heads=consecutive_heads,
-        consecutive_tails=consecutive_tails,
-    )
     return response
 
 
@@ -139,7 +148,8 @@ def get_throw(db: Session, scenario: int):
     # Return the dataframe of the throws with the given scenario
     if scenario not in throws_models.keys():
         raise ValueError('Num of throws can only be 8 or 10')
-    return pd.read_sql(f"SELECT * FROM toss_{scenario}", db.bind)
+    connection = engine.raw_connection()
+    return pd.read_sql(f"SELECT * FROM toss_{scenario}", connection)
 
 
 # =================================[ Creating API-Endpoints ]==================================

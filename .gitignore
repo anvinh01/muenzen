@@ -1,3 +1,4 @@
 /backend/.idea/
 /env/
 /.idea
+.pnpm-store

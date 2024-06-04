@@ -4,6 +4,7 @@ from random import choice
 from helper import CoinToss
 from itertools import groupby
 
+
 coin = [CoinToss.heads.value, CoinToss.tails.value]
 
 
@@ -20,7 +21,7 @@ def len_iter(items):
 
 
 def consecutive_values(data, bin_val):
-    return list((len_iter(run) for val, run in groupby(data) if val == bin_val))
+    return max((len_iter(run) for val, run in groupby(data) if val == bin_val), default=0)
 
 
 def after(df: pd.DataFrame) -> dict:
