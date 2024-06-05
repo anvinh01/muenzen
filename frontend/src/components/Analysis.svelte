@@ -6,10 +6,17 @@
     let mean_heads: Record<string, number>;
     export let analysis: number = 8;
 
+    type head_tails = { heads: Record<string, number>, tails: Record<string, number> };
+
     let analysis_data: {
         total: number;
-        count: Record<string, Record<string, number>>;
-        mean_tails: Record<string, number>, mean_heads: Record<string, number>
+        count: head_tails;
+        consecutive: {
+            mean: head_tails,
+            std: head_tails,
+            percentages: head_tails,
+            data: head_tails,
+        };
     };
 
     function fetchData() {

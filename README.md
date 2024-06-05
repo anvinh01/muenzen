@@ -1,6 +1,6 @@
 # Münzen-Projekt
 Das Ziel vom Projekt wird es eine Website zu erstellen, die den Lehrern dabei behilflich sein kann die Statistiken vom Münzwurf zu erklären.
-
+[Zur Website](https://muenzen.tyfn.de)
 <hr>
 
 # Inhaltsverzeichnis
@@ -16,7 +16,7 @@ Das Ziel vom Projekt wird es eine Website zu erstellen, die den Lehrern dabei be
     <li style="list-style: none">
         <h2><a href="#set-up">Set Up</a></h2>
         <ol>
-            <li><a href="">Docker</a></li>
+            <li><a href="#docker">Docker</a></li>
             <li><a href="">Lokal</a></li>
             <li><a href="">Makefile</a></li>
         </ol>
@@ -65,6 +65,7 @@ Es ist möglich eine Entwicklungsumgebung aufzusetzen, indem Sie in der Commandl
 ```
 docker-compose -f docker-compose.yml -p muenzen up -d
 ```
+
 
 
 

@@ -10,6 +10,7 @@
     // SVG names
     let svgHero: string = '';
     let svgTask: string = '';
+    let svgCoinTask: string = '';
     let HeadsIcon: string = '';
     let TailsIcon: string = '';
 
@@ -30,6 +31,10 @@
         // import the SVG for the Tails Coin
         const res4 = await fetch('public/assets/tails-big.svg');
         TailsIcon = await res4.text();
+
+        // import the SVG for the Tails Coin
+        const res5 = await fetch('public/assets/Coin-task.svg');
+        svgCoinTask = await res5.text();
     });
 
     // Create a writable store
@@ -172,7 +177,7 @@
             <div class="w-1/2 flex justify-center items-center">
                 <div class="h-fit w-fit flex content-center justify-center">
                     <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-                    {@html svgTask}
+                    {@html svgCoinTask}
                 </div>
             </div>
             <!-- If scenario has been selected and User is selecting Heads or Tails -->
