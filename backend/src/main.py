@@ -83,7 +83,7 @@ throws_schema = {k: create_throw_class_crud(k) for k in throws}
 def analyse_throw(df: pd.DataFrame) -> dict:
     # This is the function, which is called when a GET request is made to /throws/<scenario>
     # Analyse the dataframe and return the analysis of the dataframe as a dictionary
-    # df = df.set_index('id')  # Set the index of the dataframe to id
+    df = df.set_index('id')  # Set the index of the dataframe to id
 
     # Create an empty dictionary and fill it with the analysis of the dataframe
     response = dict(total=df.shape[0])
@@ -136,12 +136,10 @@ def get_throw(db: Session, scenario: int):
         elif df.shape[0] < 2:
             raise ValueError('Not Enough data: Database needs at least 2 throws')
         else:
+            # Prevent division by zero
             df = df.replace([np.inf, -np.inf], np.nan)
             df = df.dropna()
 
-        # Check if 'id' column exists before dropping it
-        if 'id' in df.columns:
-            df = df.drop(columns=['id'])  # Drop the id column
         return df
 
 

@@ -172,7 +172,7 @@ def test_get_throws_only_heads(mock_db_session, num_throws):
 
 
 @pytest.mark.parametrize("num_throws", test_cases)
-def test_get_throws_only_tails(mock_db_session, num_throws):
+def test_get_throws_mixed_equal(mock_db_session, num_throws):
     # Create a dataframe with only heads
     test_data = create_dataframe(num_throws)
 
