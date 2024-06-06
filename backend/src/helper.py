@@ -15,26 +15,23 @@ These are helper functions, which are used to create the models and the API-Endp
 '''
 
 
-class ConsecutiveData(BaseModel):
-    heads: Dict[int, int]
-    tails: Dict[int, int]
+class Datatype(BaseModel):
+    title: str
+    info: str
+    heads: Dict[str, float | int] | float
+    tails: Dict[str, float | int] | float
 
 
 class ConsecutiveStats(BaseModel):
-    mean: Dict[str, float]
-    std: Dict[str, float]
-    percentages: Dict[str, Dict[int, float]]
-    data: ConsecutiveData
-
-
-class CountData(BaseModel):
-    heads: Dict[str, int]
-    tails: Dict[str, int]
+    mean: Datatype
+    std: Datatype
+    percentages: Datatype
+    data: Datatype
 
 
 class AnalysisResponse(BaseModel):
     total: int
-    count: CountData
+    count: Datatype
     consecutive: ConsecutiveStats
 
 
@@ -125,6 +122,9 @@ def count(df: pd.DataFrame) -> dict:
     :return: dict
     preview:
     {
+        title : "Anzahl von Kopf und Zahl pro Wurf",
+        info : "Wir untersuchen die Anzahl von Kopf und Zahl pro Wurf. Dabei Zählen wir ab,
+         wie oft Kopf und Zahl beim Ersten Münzwurf vorkam. Danach beim zweiten Münzwurf und so weiter.",
         heads : {throw_0: int, throw_1: int,...},
         tails : {throw_0: int, throw_1: int,...},
     }
@@ -136,7 +136,13 @@ def count(df: pd.DataFrame) -> dict:
     count_heads = df.apply(lambda x: (x == 'heads').sum())
     count_tails = df.apply(lambda x: (x == 'tails').sum())
 
-    return dict(heads=count_heads.to_dict(), tails=count_tails.to_dict())
+    return dict(
+        title="Anzahl von Kopf und Zahl pro Wurf",
+        info="Wir untersuchen die Anzahl von Kopf und Zahl pro Wurf. Dabei Zählen wir ab," +
+             " wie oft Kopf und Zahl beim Ersten Münzwurf vorkam. Danach beim zweiten Münzwurf und so weiter",
+        heads=count_heads.to_dict(),
+        tails=count_tails.to_dict()
+    )
 
 
 def len_iter(items):
@@ -154,21 +160,36 @@ def consecutive_values(df: pd.DataFrame) -> dict:
     :return: dict
     preview:
     {
-        mean : {
+        mean:{
+            titles="Mittelwert von hintereinander folgenden Würfen",
+            info="Wir untersuchen die Anzahl von hintereinander folgenden Würfen.
+            Dabei Zählen wir ab wie oft Kopf und Zahl hintereinander in einer Runde maximal vorkam und
+            Ziehen davon den mittelwert.",
             heads=consecutive_heads_mean,
             tails=consecutive_tails_mean,
         },
-        std : {
+        std:{
+            titles="Standardabweichung von hintereinander folgenden Würfen",
+            info="Wir untersuchen die Standardabweichung von hintereinander folgenden Würfen.
+            Dabei Zählen wir ab wie oft Kopf und Zahl hintereinander in einer Runde maximal vorkam und
+            berechnen davon die Standard abweichung.",
             heads=consecutive_heads_std,
             tails=consecutive_tails_std,
         },
-        percentages : {
-            heads : {0: percentage, 1: percentage,...},
-            tails : {0: percentage, 1: percentage,...},
+        percentages:{
+            title="Anteil von hintereinander folgenden Würfen pro Wurf in Prozent",
+            info="Wir untersuchen den Anteil von hintereinander folgenden Würfen pro Wurf in Prozent.
+            Dabei Zählen wir ab wie oft Kopf und Zahl hintereinander in einer Runde maximal vorkam und
+            berechnen davon den Mittelwert.",
+            heads: {0: percentage, 1: percentage, ...},
+            tails:{0: percentage, 1: percentage, ...},
         },
-        data : {
-            heads : {0: int, 1: int,...},
-            tails : {0: int, 1: int,...},
+        data:{
+            title="Anzahl von hintereinander folgenden Würfen pro Wurf",
+            info="Wir untersuchen die Anzahl von hintereinander folgenden Würfen pro Wurf.
+            Dabei Zählen wir ab wie oft Kopf und Zahl hintereinander in einer Runde maximal vorkam.",
+            heads:{0: int, 1: int, ...},
+            tails:{0: int, 1: int, ...},
         }
     }
 
@@ -195,14 +216,14 @@ def consecutive_values(df: pd.DataFrame) -> dict:
     consecutive_heads_percentages = (round(consecutive_heads.value_counts() * 100 / consecutive_heads.count(), 2)
                                      .to_dict())
     consecutive_heads_data_percentage = {
-        number: consecutive_heads_percentages[number] if number in consecutive_heads_percentages else 0
+        str(number): consecutive_heads_percentages[number] if number in consecutive_heads_percentages else 0
         for number in range(0, len(df.keys()) + 1)
     }
 
     # Count the number of max consecutive heads
     consecutive_heads_count = consecutive_heads.value_counts().to_dict()
     consecutive_heads_data = {
-        number: consecutive_heads_count[number] if number in consecutive_heads_count else 0
+        str(number): consecutive_heads_count[number] if number in consecutive_heads_count else 0
         for number in range(0, len(df.keys()) + 1)
     }
 
@@ -210,31 +231,46 @@ def consecutive_values(df: pd.DataFrame) -> dict:
     consecutive_tails_percentages = (round(consecutive_tails.value_counts() * 100 / consecutive_tails.count(), 2)
                                      .to_dict())
     consecutive_tails_data_percentage = {
-        number: consecutive_tails_percentages[number] if number in consecutive_tails_percentages else 0
+        str(number): consecutive_tails_percentages[number] if number in consecutive_tails_percentages else 0
         for number in range(0, len(df.keys()) + 1)
     }
 
     # Count the number of max consecutive tails
     consecutive_tails_count = consecutive_tails.value_counts().to_dict()
     consecutive_tails_data = {
-        number: consecutive_tails_count[number] if number in consecutive_tails_count else 0
+        str(number): consecutive_tails_count[number] if number in consecutive_tails_count else 0
         for number in range(0, len(df.keys()) + 1)
     }
 
     return dict(
         mean=dict(
+            title="Mittelwert von Hintereinander folgenden Würfen",
+            info="Wir untersuchen die Anzahl von Hintereinander folgenden Würfen. " +
+                 "Dabei Zählen wir ab wie oft Kopf und Zahl hintereinander in einer Runde maximal vorkam und" +
+                 " Ziehen davon den mittelwert.",
             heads=consecutive_heads_mean,
             tails=consecutive_tails_mean,
         ),
         std=dict(
+            title="Standardabweichung von Hintereinander folgenden Würfen",
+            info="Wir untersuchen die Standardabweichung von Hintereinander folgenden Würfen. " +
+                 "Dabei Zählen wir ab wie oft Kopf und Zahl hintereinander in einer Runde maximal vorkam und" +
+                 " berechnen davon die Standard abweichung.",
             heads=consecutive_heads_std,
             tails=consecutive_tails_std,
         ),
         percentages=dict(
+            title="Anteil von Hintereinander folgenden Würfen pro Wurf in Prozent",
+            info="Wir untersuchen den Anteil von Hintereinander folgenden Würfen pro Wurf in Prozent. " +
+                 "Dabei Zählen wir ab wie oft Kopf und Zahl hintereinander in einer Runde maximal vorkam und" +
+                 " berechnen davon den Mittelwert.",
             heads=consecutive_heads_data_percentage,
             tails=consecutive_tails_data_percentage,
         ),
         data=dict(
+            title="Anzahl von Hintereinander folgenden Würfen pro Wurf",
+            info="Wir untersuchen die Anzahl von Hintereinander folgenden Würfen pro Wurf. " +
+                 "Dabei Zählen wir ab wie oft Kopf und Zahl hintereinander in einer Runde maximal vorkam.",
             heads=consecutive_heads_data,
             tails=consecutive_tails_data,
         )

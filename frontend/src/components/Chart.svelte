@@ -82,33 +82,28 @@
 
 </script>
 
-<div class="w-full h-full p-10 rounded-2xl inner-shadow">
-    <Bar {data} options={{
-        responsive: true,
-        plugins: {
-            title: {
-                display: true,
-                font: {
-                    size: 20,
-                },
-                text: data_title,
+<Bar {data} options={{
+    responsive: true,
+    plugins: {
+        title: {
+            display: true,
+            font: {
+                size: 20,
             },
-            legend: {
-                position: 'top',
-                labels: {
-                    font: {
-                        size: 16,
-                    },
-                    padding: 30,
+            text: data_title,
+        },
+        legend: {
+            position: 'top',
+            labels: {
+                font: {
+                    size: 16,
                 },
+                padding: 30,
             },
         },
-    }}/>
-</div>
+    },
+}}/>
 
 
-<style>
-    .inner-shadow {
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-</style>
+
+
