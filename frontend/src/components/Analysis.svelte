@@ -91,9 +91,9 @@
 {#if analysis_data && data_list}
     <section class="h-fit">
         {#each data_list as data}
-            <div class="h-[50vh] my-28 flex content-center justify-center group">
-                <div class="w-3/4 h-full py-14 flex justify-between items-center gap-5 group-even:flex-row-reverse">
-                    <div class="w-2/4 h-full flex items-center gap prose font-default">
+            <div class="h-min-[50vh] my-28 flex content-center justify-center group">
+                <div class="w-3/4 h-full py-14 flex flex-wrap justify-evenly items-center gap-5 group-even:flex-row-reverse">
+                    <div class="flex-1 h-full flex items-center gap prose font-default">
                         <div class="prose font-default">
                             <h3 class="my-3" id="#title">
                                 {data.title}
@@ -103,13 +103,13 @@
                             </p>
                         </div>
                     </div>
-                    <div class="h-full w-1/2 flex p justify-center ">
+                    <div class="h-full flex-1 flex p justify-center ">
                         <div class="w-full h-full p-10 rounded-2xl inner-shadow">
                             <Chart data_title="{data.title}" input_data={data}/>
                         </div>
                     </div>
+                </div>
             </div>
-        </div>
         {/each}
     </section>
 {/if}

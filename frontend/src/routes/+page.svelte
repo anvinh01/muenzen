@@ -149,7 +149,7 @@
 
 <!-- ======================================[ Task section ]======================================== -->
 {#key scenario}
-    <section id="Münzwurf" class="flex content-center justify-center mb-20" transition:fade>
+    <section id="Münzwurf" class="flex content-center justify-center" transition:fade>
         <div class="w-3/4 flex h-[70vh] justify-center content-center gap-5">
         <!-- If no scenario has been selected -->
         {#if scenario === 0}
