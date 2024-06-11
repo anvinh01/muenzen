@@ -26,17 +26,25 @@
 </script>
 
 
-<ul class="flex gap-4 center w-max-[60vw] flex-wrap">
+<ul class="flex gap-4 center w-max-[60vw] flex-wrap mobile: mobile:gap-5 mobile:w-full mobile:justify-evenly">
 	<!-- Going through the selection_array array and displaying the correct icon for each coin. -->
 	{#each selection_array as coin}
 		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		<div class="card w-[100px] h-[100px] group transition-all flip-card {coin.value ? 'active' : 'neutral'}">
-			<div class="flip-card-inner">
+		<div class="card w-[100px] h-[100px] mobile:w-auto mobile:h-auto group transition-all flip-card {coin.value ? 'active' : 'neutral'}">
+			<div class="flip-card-inner mobile:hidden">
 				<div class="icon w-full h-full flip-card-front">
 					{@html QuestionIcon}
 				</div>
 				<div class="icon w-full h-full flip-card-back {coin.value}">
 					{@html coin.value == null ? QuestionIcon :  coin.value === "heads" ? HeadsIcon : TailsIcon}
+				</div>
+			</div>
+			<div class="flip-card-inner invisible mobile:visible text-black ">
+				<div class="icon flip-card-front">
+					<p>?</p>
+				</div>
+				<div class="icon flip-card-back prose font-black">
+					<p>{coin.value == null ? "?" : coin.value === "heads" ? "K" : "Z"}</p>
 				</div>
 			</div>
 		</div>
@@ -47,8 +55,6 @@
 	
 .flip-card {
   background-color: transparent;
-  width: 100px;
-  height: 100px;
   perspective: 1000px;
 }
 
@@ -75,7 +81,6 @@
 
 
 .flip-card-back {
-  color: white;
   transform: rotateY(180deg);
 }
 </style>
