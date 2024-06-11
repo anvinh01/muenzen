@@ -27,4 +27,8 @@ html{
         transition-all hover:border-r-2 hover:border-b-2 hover:mt-[2px] hover:ml-[2px];
     }
 
+    .inner-shadow {
+        box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.4);
+    }
+
 }

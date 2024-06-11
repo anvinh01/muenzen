@@ -82,8 +82,10 @@
 
 </script>
 
-<Bar {data} options={{
+<Bar class="" {data} options={{
     responsive: true,
+    maintainAspectRatio: false,
+    aspectRatio: 1,
     plugins: {
         title: {
             display: true,

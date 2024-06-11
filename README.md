@@ -22,10 +22,10 @@ Das Ziel vom Projekt wird es eine Website zu erstellen, die den Lehrern dabei be
         </ol>
     </li>
     <li style="list-style: none">
-        <h2><a href="">Planung</a></h2>
+        <h2><a href="#planning">Planung</a></h2>
         <ol>
-            <li><a href="">Techstack</a></li>
-            <li><a href="">Diagramme</a></li>
+            <li><a href="#tech-stack">Techstack</a></li>
+            <li><a href="#diagramme">Diagramme</a></li>
             <li><a href="">Struktur</a></li>
         </ol>
     </li>
@@ -114,11 +114,11 @@ Obwohl es eine Relationale Datenbank ist, werden keine Relationen Existieren.
 Zum testen haben wir Pytest benutzt, welches das Testen von FastAPI unterstützt. Zudem verwenden wir 
 Coverage.py, um einzusehen wie viel Prozent unserer Anwendung wir bereits getestet haben.
 
-<h2 id=""> Diagramme</h2>
+<h2 id="diagramme"> Diagramme</h2>
 Es wird eine Single Page Applikation erstellt, welches die Kriterien vom User-flow Diagramm erfüllen soll. 
 Ein Mockup liegt bereits in Figma vor.
 
-<h3 id="">User-flow diagramme</h3>
+<h3 id="user-flow">User-flow diagramme</h3>
 ![Sequenz](/Docs/Frontend%20Sequenz%20Diagramm.png)
 <h3 id="design">Design Mockups</h3>
 

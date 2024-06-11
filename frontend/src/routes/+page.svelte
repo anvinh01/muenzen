@@ -100,23 +100,23 @@
 
 <!-- ===============================[ Hero section ]========================================= -->
 {#key scenario}
-    <section class="pt-8 flex content-center justify-center">
-    <div class="w-2/3 flex mobile:flex-col h-min-[80vh] mt-[10vh]">
-        <div class="w-1/2 h-full flex items-center ">
-            <div class="prose font-default">
+    <section class="pt-8 flex content-center justify-center mobile:h-auto">
+        <div class="w-2/3 flex mobile:flex-col-reverse h-min-[80vh] mt-[10vh]">
+            <div class="w-1/2 h-full flex flex-col justify-center mobile:w-full mobile:items-center">
+                <div class="prose font-default mobile:text-center">
                 <h1 class="my-3" id="#title">Münzwurf</h1>
                 <h3 class="my-2">Die Wahrscheinlichkeiten eines Münzwurf</h3>
                 <p>
                     Finde mit uns heraus wie die Statistik eines Münzwurfs aussieht und wie wir Menschen diese
                     Wahrscheinlichkeiten einschätzen.
                 </p>
+            </div>
                 <div class="pt-3 my-6">
                     <a class="btn-outer" href="#Münzwurf">Zum Münzwurf</a>
                 </div>
-            </div>
         </div>
-        <div class="w-1/2 h-fit">
-            <div class="h-fit">
+            <div class="w-1/2 h-fit mobile:hidden">
+                <div class="h-auto mobile:w-screen ">
                 <!-- eslint-disable-next-line svelte/no-at-html-tags -->
                 {@html svgHero}
             </div>
@@ -126,16 +126,16 @@
 {/key}
 <!-- ===============================[ Explanation section ]====================================== -->
 
-<section class="flex items-center justify-center">
-    <div class="w-3/4 flex h-[60vh] justify-center items-center gap-5">
-        <div class="w-1/2">
+<section class="flex items-center justify-center mobile:h-auto">
+    <div class="w-3/4 flex h-[60vh] justify-center items-center gap-5 mobile:w-full mobile:h-auto">
+        <div class="w-1/2 mobile:hidden">
             <div class="w-fit">
                 <!-- eslint-disable-next-line svelte/no-at-html-tags -->
                 {@html svgTask}
             </div>
         </div>
-        <div class="w-1/2 h-full flex items-center">
-            <div class="prose font-default">
+        <div class="w-1/2 h-full flex items-center mobile:w-full mobile:p-10">
+            <div class="prose font-default mobile:text-center">
                 <h1 class="my-3" id="#title">Unser Ziel</h1>
                 <p>
                     Wir wollen zusammen herausfinden, wie eine Person den Zufall einschätzen. Kommt zuerst Kopf? Zahl?
@@ -149,13 +149,13 @@
 
 <!-- ======================================[ Task section ]======================================== -->
 {#key scenario}
-    <section id="Münzwurf" class="flex content-center justify-center" transition:fade>
-        <div class="w-3/4 flex h-[70vh] justify-center content-center gap-5">
+    <section id="Münzwurf" class="flex content-center justify-center mobile:h-auto mobile:mb-14" transition:fade>
+        <div class="w-3/4 flex h-[70vh] justify-center content-center gap-5 mobile:h-auto">
         <!-- If no scenario has been selected -->
         {#if scenario === 0}
     
             <div class="h-full flex justify-center items-center " in:fade>
-                <div class="prose font-default">
+                <div class="prose font-default mobile:text-center">
                     <h1 class="my-3">Deine Aufgabe</h1>
                     <p>
                         Entscheide wie oft du die Münze werfen willst und wähle zwischen Kopf oder Zahl.
@@ -174,7 +174,7 @@
                 </div>
             </div>
 
-            <div class="w-1/2 flex justify-center items-center">
+            <div class="w-1/2 flex justify-center items-center mobile:hidden">
                 <div class="h-fit w-fit flex content-center justify-center">
                     <!-- eslint-disable-next-line svelte/no-at-html-tags -->
                     {@html svgCoinTask}
@@ -182,22 +182,21 @@
             </div>
             <!-- If scenario has been selected and User is selecting Heads or Tails -->
         {:else if scenario != 0 && counter !== scenario}
-            <div class="flex flex-col h-full justify-center gap-24" in:fade>
-                <!-- TODO: Create Head or Tails selection Card -->
-                <div class="flex flex-row gap-32 justify-center items-center">
+            <div class="flex flex-col h-full justify-center gap-24 mobile:gap-5" in:fade>
+                <div class="flex flex-row gap-32 justify-center items-center mobile:gap-14">
                     <button
-                      class="btn-outer bg-background w-[270px] h-min-[350px] flex flex-col items-center justify-center gap-5 font-default"
+                            class="btn-outer bg-background w-[270px] h-min-[350px] mobile:w-1/3 flex flex-col items-center justify-center gap-5 font-default"
                       id="Kopf-selection"
 											on:click={() => {counter += 1; selection[`throw_${counter}`] ="heads";}}>
-                        <span class="w-[250px] h-[250px]">{@html HeadsIcon}</span>
+                        <span class="w-[250px] h-[250px] mobile:hidden">{@html HeadsIcon}</span>
                         <span class="font-default prose-xl font-bold">Kopf</span>
                     </button>
-                    <h1 class="prose text-4xl font-bold font-default">Oder</h1>
+                    <h1 class="prose text-4xl font-bold font-default mobile:hidden">Oder</h1>
                     <button
-                      class="btn-outer bg-background w-[270px] h-min-[350px] flex flex-col items-center justify-center gap-5 "
+                            class="btn-outer bg-background w-[270px] h-min-[350px] mobile:w-1/3 flex flex-col items-center justify-center gap-5 "
                       id="Zahl-selection"
 											on:click={() => {counter += 1; selection[`throw_${counter}`] ="tails";}}>
-                        <span class="w-[250px] h-[250px]">{@html TailsIcon}</span>
+                        <span class="w-[250px] h-[250px] mobile:hidden">{@html TailsIcon}</span>
                         <span class="font-default prose-xl font-bold">Zahl</span>
                     </button>
                 </div>
@@ -223,6 +222,6 @@
 
 <!-- ===============================[ Analysis section ]====================================== -->
 
-<Analysis analysis={8} {fetchTrigger}></Analysis>
+<Analysis analysis={10} {fetchTrigger}></Analysis>
 
 
