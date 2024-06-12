@@ -1,6 +1,6 @@
 <script lang="ts">
     import {Bar} from 'svelte-chartjs';
-    import type {head_tails} from "./Analysis.svelte";
+    import type {data_entry} from "./Analysis.svelte";
     import {
         Chart,
         Title,
@@ -31,7 +31,7 @@
     };
 
     // Get the data from the input
-    export let input_data: head_tails;
+    export let input_data: data_entry;
     export let data_title: string;
 
     // Define the chart data

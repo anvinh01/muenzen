@@ -12,6 +12,18 @@ from sqlalchemy.orm import Session, declarative_base
 
 '''
 These are helper functions, which are used to create the models and the API-Endpoints.
+If you want to add another analyze function, you need to: create a new analyze function in this file. 
+It should return a dictionary with the type:
+{
+    title: str,
+    info: str,
+    heads: Dict[str, float | int] | float,
+    tails: Dict[str, float | int] | float,
+}
+or at least a dictionary which contains a dictionary with this type.
+
+1. Create a new analyze function in this file.
+2. Add the new analyze function to the analyze_throw function in main.py.
 '''
 
 

@@ -88,13 +88,13 @@ def analyse_throw(df: pd.DataFrame) -> dict:
     # Create an empty dictionary and fill it with the analysis of the dataframe
     response = dict(total=df.shape[0])
 
-    # count the mean of heads and tails
+    # add: count the mean of heads and tails
     response["count"] = count(df)
 
-    # Look up if there are any consecutive in the dataframe
+    # add: Look up if there are any consecutive in the dataframe
     response["consecutive"] = consecutive_values(df)
 
-    # Other analysis of the dataframe
+    # add Other analysis of the dataframe
     pass  # <---- Your Code goes here --->
 
     return response

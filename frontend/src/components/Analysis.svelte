@@ -1,5 +1,7 @@
 <script context="module" lang="ts">
-    export type head_tails = {
+
+    // All data in the backend should be in this type
+    export type data_entry = {
         title: string,
         info: string,
         heads: Record<string, number> | number,
@@ -22,16 +24,17 @@
 
     let analysis_data: {
         total: number;
-        count: head_tails;
+        count: data_entry;
         consecutive: {
-            mean: head_tails,
-            std: head_tails,
-            percentages: head_tails,
-            data: head_tails,
+            mean: data_entry,
+            std: data_entry,
+            percentages: data_entry,
+            data: data_entry,
         };
     };
 
-    let data_list: head_tails[] = []
+    // This is the list of data, which will be passed to the chart component and displayed as a chart
+    let data_list: data_entry[] = []
     function fetchData() {
         fetch(`/throws/${analysis}`, {
             method: 'GET',
@@ -42,6 +45,7 @@
                 console.log(analysis_data);
                 data_list = [];
 
+                // push the data to the data_list array, to display your data
                 if (analysis_data) {
                     data_list.push(analysis_data.count);
                     data_list.push(analysis_data.consecutive.mean);
@@ -63,34 +67,12 @@
 
 </script>
 
-<!-- ===============================[ Analysis section ]========================================= -->
-<section class="flex items-center justify-center mobile:my-8">
-    <div class="w-3/4 flex h-[60vh] justify-center items-center gap-5 mobile:h-auto mobile:flex-col">
-        <div class="w-1/2 h-fit mobile:w-full">
-            <div class="h-fit">
-                <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-                {@html svgAnalysis}
-            </div>
-        </div>
-        <div class="w-1/2 h-full flex items-center mobile:w-full">
-            <div class="prose font-default mobile:text-center">
-                <h1 class="my-3" id="#title">Analyse</h1>
-                <p>
-                    Wir wollen zusammen herausfinden, wie eine Person den Zufall einschätzen. Kommt zuerst Kopf?
-                    Zahl?
-                    Wie oft denkst du denn kann ein Ergebnis hintereinander vorkommen?
-                    Untersuche mit uns wie wir den Zufall auffassen und wie du einen Münzwurf einschätzt.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- ===============================[ Display different Analysis section ]========================================= -->
 {#if analysis_data && data_list}
     <section class="h-fit w-auto">
         {#each data_list as data}
-            <div class="h-min-[50vh] my-28 flex content-center justify-center group mobile:my-0">
+            <div class="h-min-[50vh] my-28 flex content-center justify-center group desktop:my-0">
                 <div class="w-3/4 h-full py-14 flex flex-wrap justify-evenly items-center gap-5 group-even:flex-row-reverse">
                     <div class="flex-1 h-full flex items-center gap prose font-default">
                         <div class="prose font-default">
@@ -102,9 +84,9 @@
                             </p>
                         </div>
                     </div>
-                    <div class="h-full flex-1 flex p justify-center mobile:w-11/12 mobile:h-auto">
-                        <div class="w-full p-10 rounded-2xl inner-shadow mobile:p-0
-                         mobile:shadow-none mobile:h-[60vh]">
+                    <div class="h-full flex-1 flex p justify-center desktop:w-11/12 desktop:h-auto">
+                        <div class="w-full p-10 rounded-2xl inner-shadow desktop:p-0
+                         desktop:shadow-none desktop:h-[60vh]">
                             <Chart data_title="{data.title}" input_data={data}/>
                         </div>
                     </div>
