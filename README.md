@@ -67,7 +67,7 @@ Unsere Website soll folgende Anforderungen vom Kunden mindestens erfüllen:
   - [x] Mittelwert an Kopf und Zahl
   - [x] Maximal aufeinander folgende Würfe
 - [ ] Der Prozess soll interessant und spaßig gestaltet werden.
-- [ ] Die Webseite soll auf einer URL erreichbar sein.
+- [x] Die Webseite soll auf einer URL erreichbar sein.
 
 <hr>
 <h1 id="set-up">Set Up</h1>
