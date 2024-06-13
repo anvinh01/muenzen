@@ -58,6 +58,9 @@
             .catch((error) => {
                 console.error('Error:', error);
             })
+            .finally(
+                fetchTrigger.set(false)
+            )
     }
 
     onMount(fetchData)
