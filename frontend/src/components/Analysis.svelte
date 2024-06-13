@@ -48,9 +48,9 @@
                 // push the data to the data_list array, to display your data
                 if (analysis_data) {
                     data_list.push(analysis_data.count);
+                    data_list.push(analysis_data.consecutive.data);
                     data_list.push(analysis_data.consecutive.mean);
                     data_list.push(analysis_data.consecutive.std);
-                    data_list.push(analysis_data.consecutive.data);
                 }
                 console.log(data_list);
                 data_list = data_list;
